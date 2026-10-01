@@ -41,7 +41,7 @@ Construir um site institucional completo, acessível e responsivo, que demonstre
 ## Estrutura do projeto
 
 ```
-Projeto_ONG/
+Projeto_ONG_Instituto_Caminhos/
 ├── index.html
 ├── sobre.html
 ├── projetos.html
@@ -83,8 +83,8 @@ Projeto_ONG/
 Para clonar o repositório:
 
 ```bash
-git clone https://github.com/ArthurMonTInegro/Projeto_ONG.git
-cd Projeto_ONG
+git clone https://github.com/ArthurMonTInegro/Projeto_ONG_Instituto_Caminhos.git
+cd Projeto_ONG_Instituto_Caminhos
 ```
 
 ## Deploy (GitHub Pages)
@@ -96,18 +96,16 @@ O site usa apenas caminhos relativos e não precisa de etapa de build. Para publ
 3. Selecione a branch `main` e a pasta `/ (root)`, e clique em **Save**.
 4. Aguarde alguns minutos. O endereço esperado é:
 
-**https://arthurmontinegro.github.io/Projeto_ONG/**
+**https://arthurmontinegro.github.io/Projeto_ONG_Instituto_Caminhos/**
 
 > Atenção: o GitHub Pages diferencia maiúsculas de minúsculas nos nomes de arquivos. Os nomes neste projeto estão todos em minúsculas.
 
-## Fluxo de versionamento
+## Versionamento
 
-O projeto foi desenvolvido em etapas, e cada uma pode ser registrada em um commit:
+O código é versionado com Git e hospedado em um repositório público no GitHub:
+https://github.com/ArthurMonTInegro/Projeto_ONG_Instituto_Caminhos
 
-1. Estrutura HTML das páginas
-2. Folha de estilos (CSS)
-3. Interatividade (JavaScript)
-4. Documentação e deploy (README)
+O desenvolvimento seguiu as quatro etapas da disciplina: estrutura HTML, folha de estilos (CSS), interatividade (JavaScript) e documentação com deploy (README).
 
 ## Créditos
 
