@@ -42,7 +42,9 @@
       <div class="container container-estreito">
         <h2 id="titulo-formulario">Formulário de cadastro</h2>
         <p>Campos com <span aria-hidden="true">*</span><span class="sr-only">asterisco</span> são obrigatórios.</p>
-        <p><small>Este é um projeto acadêmico: os dados digitados não são enviados nem armazenados em nenhum lugar.</small></p>
+        <div class="alerta alerta-info" role="note">
+          <p><strong>Informação:</strong> este é um projeto acadêmico. Os dados digitados não são enviados nem armazenados em nenhum lugar.</p>
+        </div>
 
         <form id="form-cadastro" action="#" method="get">
           <fieldset>
@@ -108,6 +110,20 @@
       </div>
     </section>
   </main>
+
+  <!-- Área onde as notificações (toasts) aparecem. Ela existe desde o início
+       para que leitores de tela anunciem as mensagens novas. -->
+  <div class="toast-area" id="area-toast" aria-live="polite"></div>
+
+  <!-- Modal de confirmação (elemento nativo <dialog>), aberto pelo JavaScript -->
+  <dialog id="modal-confirmacao" aria-labelledby="modal-titulo" aria-describedby="modal-texto">
+    <h2 id="modal-titulo">Confirmar cadastro</h2>
+    <p id="modal-texto"></p>
+    <div class="modal-botoes">
+      <button type="button" class="btn-contorno" id="modal-cancelar">Revisar dados</button>
+      <button type="button" class="btn-primario" id="modal-confirmar">Confirmar</button>
+    </div>
+  </dialog>
 
   <footer class="site-footer">
     <div class="container footer-grid">

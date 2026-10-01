@@ -14,6 +14,7 @@
    10. Responsividade (media queries)
    11. Preferência por menos movimento
    12. Componentes da Etapa 3 (usados pelo JavaScript)
+   13. Componentes de feedback: badges, alertas, toast e modal
    ========================================================== */
 
 
@@ -752,28 +753,6 @@ textarea:focus {
   border-color: #a4161a;
 }
 
-/* --- Feedback geral do formulário --- */
-.feedback {
-  padding: var(--espaco-2);
-  margin-bottom: var(--espaco-3);
-  border-radius: var(--raio-pequeno);
-  border-left: 5px solid;
-  font-weight: 600;
-  max-width: none;
-}
-
-.feedback-sucesso {
-  background: #e4f3ec;
-  border-color: var(--verde);
-  color: #17402f;
-}
-
-.feedback-erro {
-  background: #fdeaea;
-  border-color: #a4161a;
-  color: #6e0d10;
-}
-
 /* --- Filtro de projetos --- */
 .filtros {
   display: flex;
@@ -811,4 +790,200 @@ textarea:focus {
 
 .projeto[hidden] {
   display: none;
+}
+
+
+/* ==========================================================
+   13. COMPONENTES DE FEEDBACK
+   Grupo de estilos reutilizável, na paleta do Instituto.
+   Como usar (resumo, detalhes no README):
+   - Badge:  <span class="badge badge-educacao">Educação</span>
+   - Alerta: <div class="alerta alerta-info" role="note">...</div>
+             variações: alerta-info, alerta-sucesso, alerta-aviso, alerta-erro
+   - Toast:  criado pelo JavaScript com mostrarToast(texto, tipo)
+   - Modal:  <dialog> aberto com showModal()
+   ========================================================== */
+
+/* --- Badges (etiquetas de categoria) --- */
+.badge {
+  display: inline-block;
+  margin-bottom: var(--espaco-1);
+  padding: 0.15rem 0.7rem;
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.badge-educacao {
+  background: #e1eef2;
+  border-color: #9cc3cf;
+  color: var(--petroleo-escuro);
+}
+
+.badge-comunidade {
+  background: #e4f3ec;
+  border-color: #98c9b3;
+  color: #17402f;
+}
+
+.badge-participacao {
+  background: #e8edf0;
+  border-color: #b4c2c8;
+  color: var(--texto);
+}
+
+.badge-doacoes {
+  background: #fdf1d3;
+  border-color: #e3c273;
+  color: #5c3d00;
+}
+
+/* --- Alertas (caixas de aviso) --- */
+.alerta {
+  margin: 0 0 var(--espaco-3);
+  padding: var(--espaco-2);
+  border-left: 5px solid;
+  border-radius: var(--raio-pequeno);
+  max-width: none;
+}
+
+.alerta p {
+  margin: 0;
+  max-width: none;
+}
+
+.alerta-info {
+  background: #e6f1f4;
+  border-color: var(--petroleo);
+  color: var(--petroleo-escuro);
+}
+
+.alerta-sucesso {
+  background: #e4f3ec;
+  border-color: var(--verde);
+  color: #17402f;
+}
+
+.alerta-aviso {
+  background: #fdf3d9;
+  border-color: var(--ambar-escuro);
+  color: #5c3d00;
+}
+
+.alerta-erro {
+  background: #fdeaea;
+  border-color: #a4161a;
+  color: #6e0d10;
+}
+
+/* --- Toast (notificação que aparece e some sozinha) --- */
+.toast-area {
+  position: fixed;
+  right: var(--espaco-2);
+  bottom: var(--espaco-2);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-1);
+  width: min(22rem, calc(100vw - 2rem));
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espaco-1);
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--borda);
+  border-left: 5px solid var(--verde);
+  border-radius: var(--raio-pequeno);
+  background: #ffffff; /* fundo claro: aparece bem sobre a página e sobre o rodapé escuro */
+  color: var(--texto);
+  box-shadow: 0 8px 24px rgba(18, 53, 66, 0.3);
+  animation: toast-entrada 0.25s ease;
+}
+
+.toast-erro {
+  border-left-color: #a4161a;
+}
+
+.toast p {
+  flex: 1;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.toast-fechar {
+  padding: 0 0.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--petroleo);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.toast-fechar:hover {
+  background: var(--fundo-suave);
+}
+
+@keyframes toast-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Modal (elemento <dialog>) --- */
+dialog {
+  width: min(28rem, calc(100% - 2rem));
+  padding: var(--espaco-3);
+  border: 0;
+  border-radius: var(--raio);
+  background: var(--fundo);
+  color: var(--texto);
+  box-shadow: 0 12px 40px rgba(18, 53, 66, 0.35);
+}
+
+dialog::backdrop {
+  background: rgba(18, 53, 66, 0.65);
+}
+
+dialog h2 {
+  font-size: 1.5rem;
+}
+
+.modal-botoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--espaco-1);
+  margin-top: var(--espaco-3);
+}
+
+.btn-contorno {
+  border-color: var(--petroleo);
+  background: var(--fundo);
+  color: var(--petroleo);
+}
+
+.btn-contorno:hover {
+  background: var(--fundo-suave);
+}
+
+@media (max-width: 40rem) {
+  .modal-botoes button {
+    flex: 1 1 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
 }

@@ -57,6 +57,19 @@ Projeto_ONG_Instituto_Caminhos/
 └── README.md
 ```
 
+## Componentes de feedback
+
+Grupo de componentes reutilizáveis, estilizados na paleta do Instituto (seção 13 do `css/style.css`). Servem de base para futuras páginas ou para a integração com um back-end.
+
+| Componente | Classes e uso | Onde aparece |
+|------------|---------------|--------------|
+| Badge | `<span class="badge badge-educacao">Educação</span>`. Variações: `badge-educacao`, `badge-comunidade`, `badge-participacao`, `badge-doacoes` | Cartões de `index.html` e `projetos.html` |
+| Alerta | `<div class="alerta alerta-info" role="note">...</div>`. Variações: `alerta-info`, `alerta-sucesso`, `alerta-aviso`, `alerta-erro` | Avisos em `cadastro.html`, `como-ajudar.html` e `contato.html`; resultado do formulário |
+| Toast | No JavaScript: `mostrarToast("texto", "sucesso")` ou `mostrarToast("texto", "erro")`. Precisa de `<div class="toast-area" id="area-toast" aria-live="polite"></div>` na página | Após confirmar o cadastro |
+| Modal | Elemento `<dialog>` aberto com `showModal()`. Fecha com Esc, com o botão "Revisar dados" ou clicando no fundo | Confirmação do cadastro em `cadastro.html` |
+
+Boas práticas aplicadas: cada alerta tem um rótulo em texto (Informação, Aviso, Sucesso, Atenção), então o significado não depende só da cor; o toast é anunciado por leitores de tela (`aria-live`) e tem botão para fechar; o modal prende o foco dentro dele e devolve o foco ao botão que o abriu.
+
 ## Acessibilidade
 
 - Link "Ir para o conteúdo principal" no topo de todas as páginas

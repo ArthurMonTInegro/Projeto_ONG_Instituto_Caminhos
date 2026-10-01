@@ -9,7 +9,8 @@
    Funcionalidades:
    1. Menu mobile (botão abrir/fechar)
    2. Máscaras nos campos CPF, CEP e telefone
-   3. Validação do formulário com mensagens de feedback
+   3. Validação do formulário com feedback: alertas, modal de
+      confirmação e toast (notificação)
    4. Filtro de projetos por tema (página Projetos)
    ========================================================== */
 
@@ -199,14 +200,56 @@ function limparErro(campo) {
   }
 }
 
+// Alerta de feedback no formulário. tipo: "sucesso" ou "erro"
 function mostrarFeedback(elemento, tipo, texto) {
-  elemento.className = 'feedback feedback-' + tipo; // tipo: "sucesso" ou "erro"
-  elemento.textContent = texto;
+  const rotulo = document.createElement('strong');
+  rotulo.textContent = tipo === 'sucesso' ? 'Sucesso: ' : 'Atenção: ';
+
+  elemento.className = 'alerta alerta-' + tipo; // classes do CSS (seção 13)
+  elemento.textContent = '';
+  elemento.append(rotulo, texto);
+}
+
+// Toast: notificação discreta que some sozinha depois de alguns segundos
+function removerToast(toast) {
+  if (toast.parentNode) {
+    toast.remove();
+  }
+}
+
+function mostrarToast(texto, tipo) {
+  const area = document.getElementById('area-toast');
+  if (!area) {
+    return; // esta página não tem área de toast
+  }
+
+  const toast = document.createElement('div');
+  toast.className = 'toast toast-' + (tipo || 'sucesso');
+
+  const mensagem = document.createElement('p');
+  mensagem.textContent = texto;
+
+  const botaoFechar = document.createElement('button');
+  botaoFechar.type = 'button';
+  botaoFechar.className = 'toast-fechar';
+  botaoFechar.setAttribute('aria-label', 'Fechar notificação');
+  botaoFechar.textContent = '\u00d7';
+  botaoFechar.addEventListener('click', function () {
+    removerToast(toast);
+  });
+
+  toast.append(mensagem, botaoFechar);
+  area.appendChild(toast);
+
+  setTimeout(function () {
+    removerToast(toast);
+  }, 6000);
 }
 
 function iniciarFormulario() {
   const formulario = document.getElementById('form-cadastro');
   const feedback = document.getElementById('feedback-formulario');
+  const modal = document.getElementById('modal-confirmacao');
 
   if (!formulario || !feedback) {
     return; // esta página não tem o formulário
@@ -231,8 +274,22 @@ function iniciarFormulario() {
     });
   });
 
+  // Última etapa: acontece depois que a pessoa confirma no modal
+  function concluirCadastro(primeiroNome) {
+    mostrarFeedback(
+      feedback,
+      'sucesso',
+      'Obrigado, ' + primeiroNome + '! Seu cadastro foi preenchido corretamente. ' +
+      'Como este é um projeto acadêmico, nenhum dado foi enviado ou guardado.'
+    );
+    mostrarToast('Cadastro confirmado, ' + primeiroNome + '!', 'sucesso');
+    formulario.reset();
+    feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
   formulario.addEventListener('submit', function (evento) {
     evento.preventDefault(); // impede a página de recarregar
+    feedback.className = '';
     feedback.textContent = '';
 
     let totalDeErros = 0;
@@ -259,14 +316,40 @@ function iniciarFormulario() {
     }
 
     const primeiroNome = document.getElementById('nome').value.trim().split(/\s+/)[0];
-    mostrarFeedback(
-      feedback,
-      'sucesso',
-      'Obrigado, ' + primeiroNome + '! Seu cadastro foi preenchido corretamente. ' +
-      'Como este é um projeto acadêmico, nenhum dado foi enviado ou guardado.'
-    );
-    formulario.reset();
+
+    // Se o navegador não suportar <dialog>, conclui direto, sem o modal
+    if (!modal || typeof modal.showModal !== 'function') {
+      concluirCadastro(primeiroNome);
+      return;
+    }
+
+    const seletor = document.getElementById('ajuda');
+    const formaDeAjudar = seletor.options[seletor.selectedIndex].textContent.toLowerCase();
+    document.getElementById('modal-texto').textContent =
+      'Você está prestes a confirmar o cadastro de ' + primeiroNome +
+      ', com interesse em: ' + formaDeAjudar + '. Deseja confirmar?';
+
+    modal.dataset.nome = primeiroNome;
+    modal.showModal(); // abre o modal e prende o foco dentro dele
   });
+
+  if (modal && typeof modal.showModal === 'function') {
+    document.getElementById('modal-cancelar').addEventListener('click', function () {
+      modal.close();
+    });
+
+    document.getElementById('modal-confirmar').addEventListener('click', function () {
+      modal.close();
+      concluirCadastro(modal.dataset.nome);
+    });
+
+    // Clicar fora da caixa (no fundo escuro) também fecha o modal
+    modal.addEventListener('click', function (evento) {
+      if (evento.target === modal) {
+        modal.close();
+      }
+    });
+  }
 }
 
 
