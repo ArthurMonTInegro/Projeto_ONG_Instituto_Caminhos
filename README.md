@@ -92,37 +92,40 @@ O CSS segue a abordagem **desktop primeiro**: as regras base descrevem a tela de
 
 ### Os 5 breakpoints
 
-| Nome | Regra | Largura | Dispositivos | O que muda |
-|------|-------|---------|--------------|------------|
-| BP1 | `max-width: 30rem` | até 480px | celulares pequenos | Margens laterais menores (`--gutter: 1.5rem`), marca do site e botão "Menu" menores (cabem na mesma linha em 320px), cartões com menos preenchimento, botão "Enviar cadastro" em largura total, botões do modal empilhados, toast em largura total |
-| BP2 | `max-width: 40rem` | até 640px | celulares grandes e em paisagem | Grades em **1 coluna**, rodapé em 1 coluna, texto-base de 1rem, menos espaço vertical nas seções, botões do hero em largura total, imagem do hero mais baixa, formulário com menos preenchimento |
-| BP3 | `max-width: 60rem` | até 960px | tablets em retrato | **Menu hambúrguer** (e submenu em sanfona), hero em 1 coluna, rodapé em 2 colunas |
-| BP4 | `max-width: 64rem` | até 1024px | tablets em paisagem | Grades em **2 colunas**, menos espaço entre texto e imagem do hero |
-| BP5 | `min-width: 90rem` | a partir de 1440px | telas grandes | Conteúdo mais largo (`--largura: 72rem`) e margens maiores, textos e espaçamentos 12,5% maiores (`font-size: 112.5%` no `html`) |
+As faixas seguem a referência indicada na avaliação (celular pequeno, celular grande, tablet, notebook e desktop). Os limites usam `.9375` (por exemplo, `47.9375rem` = 767px e `48rem` = 768px) para que cada largura caia em **uma faixa só**.
+
+| Nome | Regra no CSS | Faixa | Dispositivos | O que muda |
+|------|--------------|-------|--------------|------------|
+| BP1 | `max-width: 30rem` | até 480px | celulares pequenos | Margens laterais menores (`--gutter: 1.5rem`), marca e botão "Menu" menores (cabem na mesma linha em 320px), cartões com menos preenchimento, botão "Enviar cadastro" em largura total, botões do modal empilhados, toast em largura total |
+| BP2 | `max-width: 47.9375rem` | 481 a 767px | celulares grandes | Grades **automáticas** com `repeat(auto-fit, minmax(min(100%, 16rem), 1fr))`: 1 coluna até ~570px e 2 colunas acima disso. Rodapé em 1 coluna, texto-base de 1rem, menos espaço vertical, botões do hero em largura total, formulário com menos preenchimento |
+| BP3 | `max-width: 63.9375rem` | 768 a 1023px | tablets | **Menu hambúrguer** (submenu vira sanfona), hero em 1 coluna com a foto sem recorte (até 36rem de largura), seções de texto + ilustração em 1 coluna, grades em 2 colunas, rodapé em 2 colunas |
+| BP4 | `max-width: 79.9375rem` | 1024 a 1279px | notebooks e telas intermediárias | Os 4 cartões de "Formas de participar" passam a **2 x 2**; menos espaço entre texto e imagem |
+| BP5 | `min-width: 80rem` | 1280px ou mais | desktops e telas amplas | Container mais largo (`--largura: 72rem`), margens maiores, textos e espaçamentos 12,5% maiores (`font-size: 112.5%` no `html`) |
 
 Existe ainda uma regra que **não depende da largura**: em dispositivos de toque (`hover: none` e `pointer: coarse`), links do menu e botão do submenu têm no mínimo 44px de altura. Ela não conta como breakpoint.
 
 ### Como grids e cards se comportam
 
-| Faixa de largura | `.grade` (cartões em 3) | `.grade-4` (formas de participar) | Hero | Rodapé | Menu |
-|------------------|-------------------------|-----------------------------------|------|--------|------|
-| até 480px | 1 coluna | 1 coluna | 1 coluna | 1 coluna | hambúrguer |
-| 481 a 640px | 1 coluna | 1 coluna | 1 coluna | 1 coluna | hambúrguer |
-| 641 a 960px | 2 colunas | 2 colunas | 1 coluna | 2 colunas | hambúrguer |
-| 961 a 1024px | 2 colunas | 2 colunas | 2 colunas | 3 colunas | horizontal com dropdown |
-| 1025 a 1439px | 3 colunas | 4 colunas | 2 colunas | 3 colunas | horizontal com dropdown |
-| 1440px ou mais | 3 colunas | 4 colunas | 2 colunas | 3 colunas | horizontal com dropdown |
+| Faixa | `.grade` (projetos, valores…) | `.grade-4` (formas de participar) | Hero | Texto + ilustração | Rodapé | Menu |
+|-------|-------------------------------|-----------------------------------|------|--------------------|--------|------|
+| até 480px | 1 coluna | 1 coluna | 1 coluna | 1 coluna | 1 coluna | hambúrguer |
+| 481 a 767px | 1 ou 2 (automático) | 1 ou 2 (automático) | 1 coluna | 1 coluna | 1 coluna | hambúrguer |
+| 768 a 1023px | 2 colunas | 2 colunas | 1 coluna | 1 coluna | 2 colunas | hambúrguer |
+| 1024 a 1279px | 3 colunas | 2 colunas | 2 colunas | 2 colunas | 3 colunas | horizontal com dropdown |
+| 1280px ou mais | 3 colunas | 4 colunas | 2 colunas | 2 colunas | 3 colunas | horizontal com dropdown |
 
-Detalhes: as grades usam `repeat(N, minmax(0, 1fr))`, que impede um texto longo de estourar a coluna. Em 2 colunas, um número ímpar de cartões deixa o último sozinho na linha (por exemplo, o 5º projeto). No rodapé em 2 colunas, o texto institucional ocupa a primeira linha inteira.
+Detalhes: fora do BP2, as grades usam `repeat(N, minmax(0, 1fr))`, que impede um texto longo de estourar a coluna. Em 2 colunas, um número ímpar de cartões deixa o último sozinho na linha (por exemplo, o 5º projeto). No rodapé em 2 colunas, o texto institucional ocupa a primeira linha inteira. As imagens mantêm a proporção 3:2 (`aspect-ratio`) e a foto do hero não é recortada em nenhuma largura.
 
 ### Critérios usados para definir os pontos de quebra
 
-- **BP3 (960px)** foi definido por **medição**: o menu horizontal precisa de cerca de 890px de conteúdo (marca + 6 itens, incluindo o botão do submenu), ou seja, cerca de 925px de tela. Abaixo disso o menu quebrava em duas linhas, então o ponto de quebra ficou em 960px, com folga.
-- **BP2 (640px)**: abaixo disso, 2 colunas deixariam cada cartão com menos de 300px de largura, com linhas de texto muito curtas. 640px também é a largura típica de um celular em paisagem.
-- **BP1 (480px)**: celulares de 320 a 480px são onde as margens, a marca e os botões precisam ficar mais compactos. Em 320px, antes do ajuste, a marca e o botão "Menu" não cabiam na mesma linha.
-- **BP4 (1024px)**: acompanha a largura de tablets em paisagem. Com 4 cartões lado a lado, cada um fica com cerca de 230px; as duas grades mudam juntas para manter a página consistente.
-- **BP5 (1440px)**: até aqui o conteúdo parava em 1088px, deixando grandes áreas vazias nas laterais. A partir de 1440px o container e a fonte crescem.
-- Os tamanhos das grades e do menu foram conferidos em 22 larguras (de 320px a 2560px), incluindo os valores de cada borda (por exemplo, 960px e 961px).
+Cada valor foi conferido no navegador:
+
+- **BP3 (1023px)**: o menu horizontal precisa de **893px** de espaço (marca + 6 itens, medido). Com o ponto de quebra antigo (960px), sobravam só 36px em telas de 961px, e zoom de texto ou fontes mais largas podiam quebrar o menu em duas linhas. A partir de 1024px sobram ~100px. Nessa faixa a foto do hero também era recortada (proporção 2:1 em vez de 3:2) e foi corrigida.
+- **BP2 (767px)**: entre 481 e 767px o espaço varia muito. Colunas fixas ou deixavam cartões estreitos demais, ou largos demais. Com `auto-fit` + `minmax`, cabem quantos cartões de pelo menos 256px couberem.
+- **BP1 (480px)**: em 320px, antes do ajuste, a marca e o botão "Menu" não cabiam na mesma linha.
+- **BP4 (1279px)**: com 4 cartões lado a lado, cada um ficaria com ~250px e linhas muito curtas. Em 2 x 2 ficam com ~500px.
+- **BP5 (1280px)**: até aqui o conteúdo parava em 1088px. Com a fonte maior, o menu passa a precisar de ~1000px e o container tem 1226px ou mais, e os 4 cartões voltam lado a lado com ~290px cada.
+- Na revisão, testes feitos com um navegador automatizado (Playwright, fora do repositório) conferiram as colunas em 12 larguras (360, 390, 480, 481, 600, 767, 768, 1023, 1024, 1279, 1280 e 1440px) e a ausência de rolagem horizontal em 24 larguras, de 320px a 1920px.
 
 ## Navegação acessível
 
@@ -130,8 +133,17 @@ O menu principal (`html/index.html`, estilos na seção 5 e na seção 14 do CSS
 
 | Tela | Comportamento |
 |------|---------------|
-| **Até 960px** (BP3) | Botão **Menu / Fechar** abre e fecha a lista de links, que aparece em coluna. O submenu "Como ajudar" vira uma sanfona dentro da lista. |
-| **Acima de 960px** | Menu horizontal. O submenu "Como ajudar" aparece como **dropdown** abaixo do item. |
+| **Até 1023px** (BP3) | Botão **Menu / Fechar** abre e fecha a lista de links, que aparece em coluna. O submenu "Como ajudar" vira uma sanfona dentro da lista. |
+| **A partir de 1024px** | Menu horizontal. O submenu "Como ajudar" aparece como **dropdown** abaixo do item. |
+
+**Como o menu hambúrguer funciona**
+
+1. O `<html>` recebe a classe `js` (em `js/main.js`). Só com ela o CSS esconde a lista e mostra o botão; sem JavaScript, o menu fica sempre visível.
+2. O botão é um `<button>` de verdade, então responde a clique, `Enter` e `Espaço` sem código extra.
+3. Ao abrir, o JavaScript coloca a classe `aberto` na lista, muda `aria-expanded` para `true` e troca o texto de "Menu" para "Fechar". O botão fica preenchido (fundo petróleo) enquanto o menu está aberto.
+4. Fecha ao clicar de novo, ao escolher uma página, ao clicar fora do cabeçalho ou com `Esc`. O `Esc` devolve o foco ao botão.
+5. Com o menu fechado, os links ficam com `display: none`: o `Tab` passa direto por eles e o foco nunca fica "preso" em algo invisível.
+6. O nome acessível do botão é o próprio texto visível ("Menu" / "Fechar"). Por isso não usamos `aria-label`: um rótulo diferente do texto visível confundiria quem usa comando de voz.
 
 O único dropdown do site é **Como ajudar**, porque essa página tem 4 seções reais (Voluntariado, Doações, Apoio a projetos e Divulgação), que já eram usadas como links na página inicial. Os demais itens não têm subpáginas e por isso continuam como links simples.
 
@@ -172,12 +184,15 @@ O JavaScript não repete o breakpoint do CSS: para saber se está no modo hambú
 - **CEP**: formato `00000-000` (só o formato é conferido).
 - **E-mail**: precisa de domínio com ponto (`nome@dominio.com`).
 - **Telefone**: celular `00 00000-0000` ou fixo `00 0000-0000`; a máscara se ajusta ao digitar.
+- **Envio**: com qualquer erro, o modal não abre; as mensagens aparecem abaixo de cada campo (ligadas por `aria-describedby`, com `aria-invalid="true"`) e o foco vai para o primeiro campo errado.
+- **Envio duplicado**: enquanto o modal está aberto, o resto da página fica inativo. Um clique duplo em "Enviar" não fecha o modal sem querer, e clicar várias vezes em "Confirmar" gera um único cadastro.
+- **Limitação**: o formulário é **demonstrativo**. Não há servidor: nada é enviado à ONG; o navegador guarda só um resumo (primeiro nome, forma de ajudar e data). A página Contato não tem formulário, apenas canais fictícios e perguntas frequentes.
 
 ## Como testar manualmente
 
-1. **Largura:** abra o site e redimensione a janela (ou use F12 e o ícone de dispositivos) em 320, 480, 640, 768, 960, 961, 1024, 1025, 1440 e 1920px. Confira a tabela de colunas acima e que não aparece rolagem lateral.
+1. **Largura:** abra o site e redimensione a janela (ou use F12 e o ícone de dispositivos) em 360, 390, 480, 768, 1024, 1280 e 1440px, e nas bordas 767, 1023 e 1279px. Confira a tabela de colunas acima e que não aparece rolagem lateral.
 2. **Teclado:** sem usar o mouse, aperte `Tab` a partir do topo da página. Confira o contorno de foco, abra o submenu com `Enter` e `Espaço`, percorra os itens com `Tab` e feche com `Esc`.
-3. **Menu hambúrguer:** em até 960px, abra o menu, abra "Como ajudar" pelo botão da seta, aperte `Esc` duas vezes (a primeira fecha o submenu, a segunda fecha o menu) e clique fora para fechar.
+3. **Menu hambúrguer:** em até 1023px, abra o menu, abra "Como ajudar" pelo botão da seta, aperte `Esc` duas vezes (a primeira fecha o submenu, a segunda fecha o menu) e clique fora para fechar.
 4. **Toque:** em um celular ou no emulador do navegador, toque no botão do submenu e em um item.
 5. **Recursos preservados:** "Ir para o conteúdo principal" (primeiro `Tab`), formulário com modal de confirmação, alerta de sucesso e toast, filtro de projetos e animações reduzidas (ative "reduzir movimento" no sistema operacional).
 
@@ -294,6 +309,17 @@ O site usa apenas caminhos relativos e não precisa de etapa de build. Para publ
 > Atenção: o GitHub Pages diferencia maiúsculas de minúsculas nos nomes de arquivos. Os nomes neste projeto estão todos em minúsculas.
 
 > **O `index.html` da raiz é obrigatório.** Com a publicação a partir de `/ (root)`, o GitHub Pages procura `index.html` na raiz do repositório. Sem ele, o endereço do projeto mostra erro 404. Esse arquivo apenas encaminha para `html/index.html`.
+
+## Principais correções (avaliação DreamShaper)
+
+| Ponto da avaliação | O que foi feito |
+|---|---|
+| Poucos breakpoints | 5 breakpoints com finalidade medida (480 / 767 / 1023 / 1279 / 1280px), documentados acima e no topo da seção 14 do CSS |
+| Menu hambúrguer pouco documentado | Funcionamento descrito passo a passo (classes `js` e `aberto`, `aria-expanded`, teclado, foco); botão com estado visual quando aberto |
+| Dropdown e teclado | Submenu "Como ajudar" no padrão *disclosure*: `Enter`/`Espaço` abrem, `Esc` fecha e devolve o foco, clique fora fecha |
+| Caminhos após a pasta `html/` | Recursos com `../`, entrada na raiz para o GitHub Pages, caminhos de imagem do JavaScript centralizados em `js/imagens.js` |
+| Formulário | CPF com dígitos verificadores, telefone fixo/celular, e-mail com domínio, proteção contra clique duplo no modal |
+| Imagens | Foto do hero em WebP sem recorte; 10 ilustrações próprias com texto alternativo |
 
 ## Versionamento
 

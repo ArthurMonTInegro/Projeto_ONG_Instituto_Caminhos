@@ -730,8 +730,8 @@ textarea:focus {
    ========================================================== */
 
 /* --- Botão do menu hambúrguer ---
-   Fica escondido por padrão. Só aparece até 60rem (tablet em retrato
-   e celulares), e somente com o JavaScript ativo (classe "js" no
+   Fica escondido por padrão. Só aparece até 1023px (tablets e
+   celulares, BP3), e somente com o JavaScript ativo (classe "js" no
    <html>). As regras dessa faixa estão na seção 14. */
 .nav-toggle {
   display: none;
@@ -743,6 +743,15 @@ textarea:focus {
 
 .nav-toggle:hover {
   background: var(--fundo-suave);
+}
+
+/* Menu aberto: o botão fica preenchido, reforçando o estado
+   (o texto também muda de "Menu" para "Fechar" e o aria-expanded
+   passa a "true"). */
+.nav-toggle[aria-expanded="true"],
+.nav-toggle[aria-expanded="true"]:hover {
+  background: var(--petroleo);
+  color: #ffffff;
 }
 
 /* --- Mensagens de erro do formulário --- */
@@ -1097,58 +1106,75 @@ main:focus,
 
 
 /* ==========================================================
-   14. RESPONSIVIDADE (breakpoints)
+   14. RESPONSIVIDADE (5 breakpoints)
 
-   Abordagem "desktop primeiro": o CSS acima descreve a tela de
-   notebook (1025px a 1439px). Cada bloco abaixo ajusta o layout
-   para telas MENORES que o valor indicado, e o último para telas
-   MAIORES. Os blocos vêm do maior para o menor, então o menor
-   sempre "vence" quando duas regras se aplicam.
+   Abordagem "desktop primeiro": as regras acima descrevem a tela de
+   desktop. Os blocos BP4 a BP1 ajustam o layout para telas MENORES
+   (max-width) e o BP5 para telas MAIORES (min-width). Os blocos vêm
+   do maior para o menor, então o menor sempre "vence" quando duas
+   regras valem ao mesmo tempo.
 
+   As faixas seguem a referência da disciplina (480 / 767 / 1023 /
+   1279 / 1280px) e cada uma resolve um problema medido no navegador:
+
+   Faixa            Breakpoint                 Dispositivo        O que muda
+   --------------   ------------------------   ----------------   ------------------------------
+   até 480px        BP1 max-width 30rem        celular pequeno    margens, marca e botões
+                                                                  compactos; botões largos
+   481 a 767px      BP2 max-width 47.9375rem   celular grande     grades automáticas (auto-fit:
+                                                                  1 ou 2 colunas), rodapé em 1
+                                                                  coluna, espaçamentos menores
+   768 a 1023px     BP3 max-width 63.9375rem   tablet             menu hambúrguer, hero e
+                                                                  texto+imagem em 1 coluna,
+                                                                  grades em 2 colunas
+   1024 a 1279px    BP4 max-width 79.9375rem   notebook           4 cartões viram 2 x 2
+   1280px ou mais   BP5 min-width 80rem        desktop / amplo    fonte e container maiores
+
+   Por que ".9375"? 47.9375rem = 767px e 48rem = 768px. Assim cada
+   largura cai em UMA faixa só, sem sobreposição.
    (rem em media query vale sempre 16px, e variáveis CSS não
    funcionam dentro de media query: por isso os valores se repetem.)
-
-   Breakpoint        Largura          Dispositivos       O que muda
-   ---------------   --------------   ----------------   ----------------------------
-   BP1  30rem        até 480px        celular pequeno    1 coluna, botões largos, marca
-                                                         menor, modal e toast compactos
-   BP2  40rem        até 640px        celular grande     grades em 1 coluna, rodapé em
-                                                         1 coluna, espaçamentos menores
-   BP3  60rem        até 960px        tablet retrato     menu hambúrguer, hero em 1
-                                                         coluna, rodapé em 2 colunas,
-                                                         texto+imagem em 1 coluna
-   BP4  64rem        até 1024px       tablet paisagem    grades em 2 colunas
-   (padrão)          1025 a 1439px    notebook           grades 3/4 colunas, menu
-                                                         horizontal com dropdown
-   (entre BP3 e BP4: 961 a 1024px mantém o menu horizontal e 2 colunas)
-   BP5  90rem        a partir 1440px  tela grande        conteúdo mais largo, fonte e
-                                                         espaçamentos maiores
    ========================================================== */
 
-/* BP4: tablet em paisagem e notebooks pequenos (até 1024px)
-   Com menos espaço, os cartões passam para 2 colunas. */
-@media (max-width: 64rem) {
-  .grade,
+/* BP4: notebooks e telas intermediárias (até 1279px)
+   Com 4 cartões lado a lado, cada um ficaria com cerca de 250px e
+   linhas de texto muito curtas. Eles passam a 2 x 2. */
+@media (max-width: 79.9375rem) {
   .grade-4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .hero-inner {
+  .hero-inner,
+  .com-imagem {
     gap: var(--espaco-3);
   }
 }
 
-/* BP3: tablet em retrato (até 960px)
-   O menu horizontal precisa de cerca de 890px de conteúdo (≈ 925px
-   de tela, medido no navegador). Abaixo de 960px ele não cabe em uma
-   linha, então vira hambúrguer. */
-@media (max-width: 60rem) {
+/* BP3: tablets (até 1023px)
+   O menu horizontal precisa de cerca de 890px (medido). Até 1023px a
+   folga seria pequena demais (com zoom ou fontes mais largas ele
+   quebraria em duas linhas), então o menu vira hambúrguer. */
+@media (max-width: 63.9375rem) {
+  .grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .hero {
     padding-block: var(--espaco-4);
   }
 
   .hero-inner {
     grid-template-columns: 1fr; /* texto em cima, imagem embaixo */
+  }
+
+  /* A foto mantém a proporção original (3:2), sem recorte, e não
+     passa de 36rem de largura para não dominar a tela. */
+  .hero-imagem {
+    max-width: 36rem;
+  }
+
+  .hero-imagem img {
+    max-height: none;
   }
 
   .footer-grid {
@@ -1164,7 +1190,6 @@ main:focus,
   .com-imagem,
   .layout-cadastro {
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--espaco-3);
   }
 
   .com-imagem-invertida .com-imagem-texto {
@@ -1181,7 +1206,8 @@ main:focus,
   }
 
   /* Menu hambúrguer: a marca fica à esquerda, o botão à direita e a
-     lista de links abaixo, em coluna. Só vale com JavaScript ativo. */
+     lista de links abaixo, em coluna. Só vale com JavaScript ativo
+     (classe "js" no <html>); sem JavaScript o menu fica sempre visível. */
   .js .nav-toggle {
     display: inline-block;
   }
@@ -1231,16 +1257,19 @@ main:focus,
   }
 }
 
-/* BP2: celular grande (até 640px)
-   Os cartões ocupam a linha toda e os espaçamentos diminuem. */
-@media (max-width: 40rem) {
+/* BP2: celulares grandes (até 767px)
+   Aqui o espaço varia muito (481 a 767px). Em vez de fixar o número de
+   colunas, a grade usa auto-fit + minmax: cabem quantos cartões de
+   pelo menos 16rem (256px) couberem -> 1 coluna até ~570px, 2 colunas
+   acima disso. min(100%, 16rem) evita estouro em telas estreitas. */
+@media (max-width: 47.9375rem) {
   body {
     font-size: 1rem;
   }
 
   .grade,
   .grade-4 {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   }
 
   .footer-grid {
@@ -1262,13 +1291,9 @@ main:focus,
   .botoes .btn {
     flex: 1 1 100%; /* botões ocupam a largura toda */
   }
-
-  .hero-imagem img {
-    max-height: 18rem;
-  }
 }
 
-/* BP1: celular pequeno (até 480px)
+/* BP1: celulares pequenos (até 480px)
    Ajustes finos para a marca e o botão caberem na mesma linha
    (320px) e para o formulário ficar confortável ao toque. */
 @media (max-width: 30rem) {
@@ -1314,10 +1339,12 @@ main:focus,
   }
 }
 
-/* BP5: telas grandes (a partir de 1440px)
-   O conteúdo cresce junto: container mais largo e tudo em rem
-   fica 12,5% maior (18px em vez de 16px). */
-@media (min-width: 90rem) {
+/* BP5: desktops e telas amplas (a partir de 1280px)
+   Até aqui o conteúdo parava em 1088px. Agora o container fica mais
+   largo e tudo em rem fica 12,5% maior (18px em vez de 16px). O menu
+   horizontal passa a precisar de ~1000px e o container tem 1226px ou
+   mais, e os 4 cartões voltam a ficar lado a lado com ~290px cada. */
+@media (min-width: 80rem) {
   html {
     font-size: 112.5%;
   }

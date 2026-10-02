@@ -3,7 +3,7 @@
 
    Cuida de dois comportamentos:
 
-   1. MENU HAMBÚRGUER (telas pequenas e tablets em retrato)
+   1. MENU HAMBÚRGUER (até 1023px: celulares e tablets)
       O botão "Menu" abre e fecha a lista de links.
 
    2. SUBMENU "Como ajudar" (dropdown)

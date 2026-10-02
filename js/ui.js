@@ -120,8 +120,12 @@
         modal.close('cancelado');
       }
 
+      // Clicar no fundo escuro cancela. evento.detail conta os cliques
+      // seguidos: em um clique duplo no botão "Enviar", o 1º clique abre
+      // o modal e o 2º cairia no fundo (detail = 2) e o fecharia na hora.
+      // Por isso só um clique simples (detail 1) no fundo cancela.
       function aoClicarNoFundo(evento) {
-        if (evento.target === modal) {
+        if (evento.target === modal && evento.detail <= 1) {
           modal.close('cancelado');
         }
       }
