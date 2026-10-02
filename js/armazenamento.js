@@ -46,16 +46,42 @@
     }
   }
 
+  // Os dados do localStorage podem ter sido alterados à mão (ou por
+  // outra versão do site). Por isso nunca confiamos neles: só passam
+  // itens com o formato esperado, e os textos são limitados em tamanho.
+  const LIMITE_CADASTROS = 50;
+  const LIMITE_TEXTO = 80;
+
+  function textoSeguro(valor) {
+    return typeof valor === 'string' ? valor.slice(0, LIMITE_TEXTO) : '';
+  }
+
+  function cadastroValido(item) {
+    return item !== null && typeof item === 'object' &&
+      typeof item.primeiroNome === 'string' && item.primeiroNome.trim() !== '' &&
+      typeof item.ajuda === 'string' && typeof item.data === 'string' &&
+      !Number.isNaN(Date.parse(item.data));
+  }
+
   // --- Cadastros ---
   function listarCadastros() {
     const lista = ler('cadastros', []);
-    return Array.isArray(lista) ? lista : [];
+    if (!Array.isArray(lista)) {
+      return [];
+    }
+    return lista.filter(cadastroValido).slice(-LIMITE_CADASTROS).map(function (item) {
+      return {
+        primeiroNome: textoSeguro(item.primeiroNome),
+        ajuda: textoSeguro(item.ajuda),
+        data: item.data
+      };
+    });
   }
 
   function adicionarCadastro(cadastro) {
     const lista = listarCadastros();
     lista.push(cadastro);
-    return salvar('cadastros', lista);
+    return salvar('cadastros', lista.slice(-LIMITE_CADASTROS));
   }
 
   function limparCadastros() {
@@ -65,7 +91,17 @@
   // --- Rascunho do formulário ---
   function lerRascunho() {
     const rascunho = ler('rascunho', null);
-    return rascunho && typeof rascunho === 'object' ? rascunho : null;
+    if (!rascunho || typeof rascunho !== 'object' || Array.isArray(rascunho)) {
+      return null;
+    }
+    // só os quatro campos permitidos, e só se forem texto
+    const limpo = {};
+    ['nome', 'email', 'ajuda', 'mensagem'].forEach(function (campo) {
+      if (typeof rascunho[campo] === 'string') {
+        limpo[campo] = rascunho[campo].slice(0, 2000);
+      }
+    });
+    return limpo;
   }
 
   function salvarRascunho(rascunho) {
@@ -78,7 +114,8 @@
 
   // --- Filtro da página Projetos ---
   function lerFiltro() {
-    return ler('filtro-projetos', 'todos');
+    const filtro = ler('filtro-projetos', 'todos');
+    return typeof filtro === 'string' ? filtro : 'todos';
   }
 
   function salvarFiltro(categoria) {

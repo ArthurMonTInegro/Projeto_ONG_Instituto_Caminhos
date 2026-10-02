@@ -4,19 +4,37 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Instituto Caminhos: uma ONG fictícia que transforma solidariedade em ações concretas, conectando voluntários, doadores e comunidades.">
-  <title>Instituto Caminhos | Solidariedade em ação</title>
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="css/style.css">
+  <meta name="theme-color" content="#1b4b5a">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- Política de segurança: só carrega recursos do próprio site (o GitHub Pages
+       não permite configurar cabeçalhos HTTP, por isso usamos a <meta>). -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
 
-  <!-- Os scripts são carregados na ordem abaixo (defer mantém a ordem). -->
-  <script src="js/armazenamento.js" defer></script>
-  <script src="js/ui.js" defer></script>
-  <script src="js/navegacao.js" defer></script>
-  <script src="js/templates.js" defer></script>
-  <script src="js/formulario.js" defer></script>
-  <script src="js/projetos.js" defer></script>
-  <script src="js/router.js" defer></script>
-  <script src="js/main.js" defer></script>
+  <!-- Prévia ao compartilhar o link (valores trocados pelo JavaScript a cada página) -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Instituto Caminhos">
+  <meta property="og:title" content="Instituto Caminhos | Solidariedade em ação">
+  <meta property="og:description" content="Instituto Caminhos: uma ONG fictícia que transforma solidariedade em ações concretas, conectando voluntários, doadores e comunidades.">
+  <meta property="og:image" content="https://arthurmontinegro.github.io/Projeto_ONG_Instituto_Caminhos/img/fachada-instituto-1536.webp">
+  <meta property="og:image:alt" content="Fachada do prédio do Instituto Caminhos com voluntários sorrindo e segurando caixas de doações">
+
+  <title>Instituto Caminhos | Solidariedade em ação</title>
+  <link rel="icon" type="image/svg+xml" href="../img/ilustracoes/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- Esta página fica em html/. Por isso CSS, JS e imagens usam "../"
+       (sobe uma pasta até a raiz do projeto). Os scripts são carregados
+       na ordem abaixo (defer mantém a ordem). -->
+  <script src="../js/armazenamento.js" defer></script>
+  <script src="../js/ui.js" defer></script>
+  <script src="../js/imagens.js" defer></script>
+  <script src="../js/navegacao.js" defer></script>
+  <script src="../js/templates.js" defer></script>
+  <script src="../js/formulario.js" defer></script>
+  <script src="../js/projetos.js" defer></script>
+  <script src="../js/router.js" defer></script>
+  <script src="../js/main.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Ir para o conteúdo principal</a>
@@ -98,8 +116,8 @@
 
   <!-- Modal de confirmação reutilizável (elemento nativo <dialog>) -->
   <dialog id="modal" aria-labelledby="modal-titulo" aria-describedby="modal-texto">
-    <h2 id="modal-titulo"></h2>
-    <p id="modal-texto"></p>
+    <h2 id="modal-titulo">Confirmação</h2>
+    <p id="modal-texto">Deseja continuar?</p>
     <div class="modal-botoes">
       <button type="button" class="btn-contorno" id="modal-cancelar">Cancelar</button>
       <button type="button" class="btn-primario" id="modal-confirmar">Confirmar</button>

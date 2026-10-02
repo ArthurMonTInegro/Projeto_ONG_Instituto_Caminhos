@@ -31,10 +31,19 @@
     return texto;
   }
 
+  // Aceita celular (11 dígitos: 00 00000-0000) e fixo (10 dígitos: 00 0000-0000).
+  // Com até 10 dígitos o hífen vem depois do 6º; no 11º dígito o texto se
+  // reorganiza para o formato de celular.
   function formatarTelefone(numeros) {
-    let texto = numeros.slice(0, 2);
-    if (numeros.length > 2) texto += ' ' + numeros.slice(2, 7);
-    if (numeros.length > 7) texto += '-' + numeros.slice(7, 11);
+    const digitos = numeros.slice(0, 11);
+    let texto = digitos.slice(0, 2);
+    if (digitos.length > 2) {
+      const tamanhoDoPrefixo = digitos.length > 10 ? 5 : 4;
+      texto += ' ' + digitos.slice(2, 2 + tamanhoDoPrefixo);
+      if (digitos.length > 2 + tamanhoDoPrefixo) {
+        texto += '-' + digitos.slice(2 + tamanhoDoPrefixo);
+      }
+    }
     return texto;
   }
 
@@ -55,11 +64,12 @@
   const MENSAGENS = {
     nome: {
       vazio: 'Digite o seu nome completo.',
-      formato: 'Digite nome e sobrenome.'
+      formato: 'Digite nome e sobrenome, só com letras.'
     },
     cpf: {
       vazio: 'Digite o seu CPF.',
-      formato: 'Use o formato 000.000.000-00.'
+      formato: 'Use o formato 000.000.000-00.',
+      invalido: 'Este CPF não é válido. Confira os números digitados.'
     },
     cep: {
       vazio: 'Digite o seu CEP.',
@@ -71,13 +81,39 @@
     },
     telefone: {
       vazio: 'Digite o seu telefone.',
-      formato: 'Use o formato 00 00000-0000, com DDD.'
+      formato: 'Use DDD e número: 00 00000-0000 (celular) ou 00 0000-0000 (fixo).'
     },
     ajuda: {
       vazio: 'Escolha como gostaria de ajudar.',
       formato: 'Escolha uma das opções da lista.'
     }
   };
+
+  // Confere os dois dígitos verificadores do CPF (algoritmo oficial).
+  // Recebe só números. Recusa também sequências como 111.111.111-11,
+  // que passam na conta mas não existem.
+  function cpfEhValido(numeros) {
+    if (numeros.length !== 11 || /^(\d)\1{10}$/.test(numeros)) {
+      return false;
+    }
+
+    function calcularDigito(quantidade) {
+      let soma = 0;
+      for (let i = 0; i < quantidade; i++) {
+        soma += Number(numeros[i]) * (quantidade + 1 - i);
+      }
+      const resto = (soma * 10) % 11;
+      return resto === 10 ? 0 : resto;
+    }
+
+    return calcularDigito(9) === Number(numeros[9]) && calcularDigito(10) === Number(numeros[10]);
+  }
+
+  // O type="email" do navegador aceita "a@b" (sem ponto). Aqui exigimos
+  // um domínio com ponto e sem espaços: nome@dominio.com
+  function emailEhValido(texto) {
+    return /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(texto);
+  }
 
   // Devolve o texto do erro do campo, ou '' se estiver tudo certo
   function obterErro(campo) {
@@ -87,11 +123,21 @@
     if (valor === '') {
       return mensagens.vazio;
     }
-    if (campo.name === 'nome' && valor.split(/\s+/).length < 2) {
-      return mensagens.formato;
+    if (campo.name === 'nome') {
+      const palavras = valor.split(/\s+/);
+      // pelo menos duas palavras e só letras, espaços, apóstrofo, ponto e hífen
+      if (palavras.length < 2 || !/^[\p{L}][\p{L}' .-]*$/u.test(valor)) {
+        return mensagens.formato;
+      }
     }
     if (!campo.validity.valid) {
       return mensagens.formato;
+    }
+    if (campo.name === 'email' && !emailEhValido(valor)) {
+      return mensagens.formato;
+    }
+    if (campo.name === 'cpf' && !cpfEhValido(valor.replace(/\D/g, ''))) {
+      return mensagens.invalido;
     }
     return '';
   }
@@ -312,6 +358,10 @@
   }
 
   Caminhos.formulario = {
-    iniciar: iniciar
+    iniciar: iniciar,
+    // expostas para poderem ser testadas isoladamente
+    cpfEhValido: cpfEhValido,
+    emailEhValido: emailEhValido,
+    formatarTelefone: formatarTelefone
   };
 })(window.Caminhos = window.Caminhos || {});

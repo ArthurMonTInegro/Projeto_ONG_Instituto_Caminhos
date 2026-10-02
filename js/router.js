@@ -46,6 +46,25 @@
     });
   }
 
+  // Atualiza as <meta> de descrição para a "página" atual. (Em uma SPA
+  // com "#", o HTML inicial é sempre o mesmo; por isso o JavaScript
+  // troca esses textos a cada rota.)
+  function atualizarMeta(visao) {
+    const descricao = document.querySelector('meta[name="description"]');
+    const ogTitulo = document.querySelector('meta[property="og:title"]');
+    const ogDescricao = document.querySelector('meta[property="og:description"]');
+
+    if (descricao && visao.descricao) {
+      descricao.setAttribute('content', visao.descricao);
+    }
+    if (ogTitulo) {
+      ogTitulo.setAttribute('content', visao.titulo);
+    }
+    if (ogDescricao && visao.descricao) {
+      ogDescricao.setAttribute('content', visao.descricao);
+    }
+  }
+
   function renderizar() {
     const app = document.getElementById('app');
     const rota = lerRota();
@@ -60,8 +79,9 @@
     void app.offsetWidth; // reinicia a animação de entrada
     app.classList.add('pagina-entrada');
 
-    // 2. Atualiza título da aba e menu
+    // 2. Atualiza título da aba, descrição (meta) e menu
     document.title = visao.titulo;
+    atualizarMeta(visao);
     marcarMenu(existe ? rota.pagina : '');
 
     // 3. Liga os comportamentos da página (formulário, filtro...)

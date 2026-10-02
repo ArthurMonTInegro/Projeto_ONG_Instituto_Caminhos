@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instituto Caminhos</title>
+  <meta name="description" content="Instituto Caminhos: uma ONG fictícia que transforma solidariedade em ações concretas, conectando voluntários, doadores e comunidades.">
+  <link rel="icon" type="image/svg+xml" href="img/ilustracoes/favicon.svg">
+
+  <!--
+    PÁGINA DE ENTRADA
+    O site fica em html/index.html. O GitHub Pages, porém, abre o
+    index.html da RAIZ quando alguém acessa o endereço do projeto.
+    Esta página só encaminha a pessoa para o site, mantendo a rota
+    pedida depois do "#" (ex.: index.html#/sobre -> html/index.html#/sobre).
+  -->
+  <script>
+    window.location.replace('html/index.html' + window.location.hash);
+  </script>
+  <!-- Se o JavaScript estiver desativado, o navegador encaminha sozinho -->
+  <meta http-equiv="refresh" content="0; url=html/index.html">
+</head>
+<body>
+  <main>
+    <h1>Instituto Caminhos</h1>
+    <p>Abrindo o site&hellip; Se nada acontecer, <a href="html/index.html">clique aqui para entrar</a>.</p>
+  </main>
+</body>
+</html>

@@ -15,6 +15,7 @@
    11. Componentes do menu mobile, filtro e formulário (JavaScript)
    12. Componentes de feedback: badges, alertas, toast e modal
    13. SPA: transição entre páginas, foco e lista de cadastros
+   13b. Imagens e seções com ilustração
    14. Responsividade: 5 breakpoints (vêm por último, de propósito:
        assim eles sobrescrevem as regras base de todas as seções)
    ========================================================== */
@@ -393,10 +394,15 @@ small {
   margin: 0;
 }
 
+.hero-imagem picture {
+  display: block;
+}
+
 .hero-imagem img {
   width: 100%;
   max-height: 26rem;
   object-fit: cover;
+  object-position: 50% 30%; /* se a foto for recortada, preserva rostos e fachada */
   border-radius: 1.25rem;
   border: 4px solid rgba(255, 255, 255, 0.18);
 }
@@ -1033,6 +1039,64 @@ main:focus,
 
 
 /* ==========================================================
+   13b. IMAGENS E SEÇÕES COM ILUSTRAÇÃO
+   - .cartao-img: ilustração no topo de um cartão (Projetos, Sobre)
+   - .com-imagem: texto de um lado e ilustração do outro
+   - .layout-cadastro: formulário + ilustração ao lado
+   As ilustrações têm proporção 3:2 (600 x 400); aspect-ratio
+   reserva o espaço antes de a imagem carregar.
+   ========================================================== */
+.cartao-img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  margin-bottom: var(--espaco-2);
+  border-radius: var(--raio-pequeno);
+  background: var(--fundo-suave);
+}
+
+.com-imagem {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--espaco-4);
+  align-items: center;
+}
+
+.com-imagem-invertida .com-imagem-texto {
+  order: 2; /* a imagem passa para a esquerda em telas largas */
+}
+
+.com-imagem-texto > :last-child {
+  margin-bottom: 0;
+}
+
+.com-imagem-figura,
+.cadastro-figura {
+  margin: 0;
+}
+
+.com-imagem-figura img,
+.cadastro-figura img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--fundo-suave);
+}
+
+.layout-cadastro {
+  display: grid;
+  grid-template-columns: minmax(0, 40rem) minmax(0, 1fr);
+  gap: var(--espaco-4);
+  align-items: start;
+}
+
+.cadastro-figura {
+  position: sticky;
+  top: var(--espaco-2);
+}
+
+
+/* ==========================================================
    14. RESPONSIVIDADE (breakpoints)
 
    Abordagem "desktop primeiro": o CSS acima descreve a tela de
@@ -1051,7 +1115,8 @@ main:focus,
    BP2  40rem        até 640px        celular grande     grades em 1 coluna, rodapé em
                                                          1 coluna, espaçamentos menores
    BP3  60rem        até 960px        tablet retrato     menu hambúrguer, hero em 1
-                                                         coluna, rodapé em 2 colunas
+                                                         coluna, rodapé em 2 colunas,
+                                                         texto+imagem em 1 coluna
    BP4  64rem        até 1024px       tablet paisagem    grades em 2 colunas
    (padrão)          1025 a 1439px    notebook           grades 3/4 colunas, menu
                                                          horizontal com dropdown
@@ -1092,6 +1157,27 @@ main:focus,
 
   .footer-grid > :first-child {
     grid-column: 1 / -1; /* o texto institucional ocupa a linha toda */
+  }
+
+  /* Texto + ilustração e formulário + ilustração: viram uma coluna só,
+     com a imagem embaixo do texto e em tamanho moderado. */
+  .com-imagem,
+  .layout-cadastro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--espaco-3);
+  }
+
+  .com-imagem-invertida .com-imagem-texto {
+    order: 0;
+  }
+
+  .com-imagem-figura,
+  .cadastro-figura {
+    max-width: 28rem;
+  }
+
+  .cadastro-figura {
+    position: static;
   }
 
   /* Menu hambúrguer: a marca fica à esquerda, o botão à direita e a

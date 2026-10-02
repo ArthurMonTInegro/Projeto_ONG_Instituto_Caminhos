@@ -31,30 +31,35 @@
     {
       categoria: 'educacao',
       titulo: 'Caminhos para a Educação',
+      imagem: 'educacao',
       resumo: 'Aproximamos pessoas de iniciativas educacionais, incentivando o acesso ao conhecimento e apoiando atividades de aprendizagem na comunidade.',
       descricao: 'Aproximamos pessoas de iniciativas educacionais, incentivando o acesso ao conhecimento e apoiando atividades de aprendizagem na comunidade.'
     },
     {
       categoria: 'comunidade',
       titulo: 'Conexão Comunitária',
+      imagem: 'conexao-comunitaria',
       resumo: 'Criamos pontes entre voluntários e ações sociais existentes, valorizando a colaboração para fortalecer o impacto local.',
       descricao: 'Criamos pontes entre voluntários e ações sociais existentes, valorizando a colaboração e a mobilização comunitária para fortalecer o impacto local.'
     },
     {
       categoria: 'participacao',
       titulo: 'Oportunidades em Rede',
+      imagem: 'oportunidades-rede',
       resumo: 'Divulgamos oportunidades de participação social, para que cada pessoa encontre a melhor forma de contribuir.',
       descricao: 'Divulgamos oportunidades de participação social, facilitando o acesso à informação para que cada pessoa encontre a melhor forma de contribuir, seja com voluntariado, apoio a projetos ou doações.'
     },
     {
       categoria: 'doacoes',
       titulo: 'Campanhas de Arrecadação',
+      imagem: 'campanha-arrecadacao',
       resumo: 'Organizamos campanhas para reunir doações e apoiar as ações do Instituto.',
       descricao: 'Organizamos campanhas para reunir doações e apoiar as ações do Instituto, com informações claras sobre o que está sendo arrecadado.'
     },
     {
       categoria: 'doacoes',
       titulo: 'Distribuição de Doações',
+      imagem: 'distribuicao-doacoes',
       resumo: 'Buscamos levar as doações arrecadadas a quem mais precisa.',
       descricao: 'Buscamos levar as doações arrecadadas a pessoas e comunidades que precisam de apoio, de forma organizada e transparente.'
     }
@@ -120,6 +125,7 @@
     const titulo = configuracao.numero ? `${configuracao.numero}. ${projeto.titulo}` : projeto.titulo;
 
     return `<article class="cartao projeto" data-categoria="${projeto.categoria}">
+            ${Caminhos.imagens.html(projeto.imagem, 'cartao-img')}
             ${badge(projeto.categoria)}
             <h3>${esc(titulo)}</h3>
             <p>${esc(texto)}</p>
@@ -132,6 +138,22 @@
             <p>${forma.texto}</p>
             <a href="${forma.link}">${forma.rotulo}</a>
           </article>`;
+  }
+
+  // Seção com texto de um lado e ilustração do outro.
+  // Em telas estreitas a imagem fica embaixo do texto (ver CSS, seção 15).
+  // opcoes.invertida: coloca a imagem à esquerda em telas largas.
+  function textoComImagem(conteudo, chaveDaImagem, opcoes) {
+    const configuracao = opcoes || {};
+    const classe = configuracao.invertida ? 'com-imagem com-imagem-invertida' : 'com-imagem';
+    return `<div class="${classe}">
+          <div class="com-imagem-texto">
+            ${conteudo}
+          </div>
+          <figure class="com-imagem-figura">
+            ${Caminhos.imagens.html(chaveDaImagem)}
+          </figure>
+        </div>`;
   }
 
   function cabecalhoPagina(titulo, texto) {
@@ -182,7 +204,7 @@
     return `
     <section class="hero" aria-labelledby="titulo-pagina">
       <div class="container hero-inner">
-        <div class="hero-texto">
+        <div>
           <h1 id="titulo-pagina">Cada pessoa pode abrir um caminho para uma realidade melhor</h1>
           <p>O Instituto Caminhos transforma solidariedade em ações concretas dentro da comunidade. Aproximamos quem quer ajudar de quem precisa de apoio.</p>
           <div class="botoes">
@@ -191,7 +213,12 @@
           </div>
         </div>
         <figure class="hero-imagem">
-          <img src="img/fachada-instituto.png" alt="Fachada do prédio do Instituto Caminhos com voluntários sorrindo e segurando caixas de doações">
+          <!-- WebP leve (60 KB / 150 KB) para navegadores modernos; o PNG original
+               fica como alternativa. Sem loading="lazy": é a imagem principal. -->
+          <picture>
+            <source type="image/webp" srcset="${Caminhos.imagens.url('img/fachada-instituto-768.webp')} 768w, ${Caminhos.imagens.url('img/fachada-instituto-1536.webp')} 1536w" sizes="(max-width: 60rem) 100vw, 40vw">
+            <img src="${Caminhos.imagens.url('img/fachada-instituto.png')}" width="1536" height="1024" fetchpriority="high" decoding="async" alt="Fachada do prédio do Instituto Caminhos com voluntários sorrindo e segurando caixas de doações">
+          </picture>
         </figure>
       </div>
     </section>
@@ -254,17 +281,17 @@
 
     <section class="secao" aria-labelledby="titulo-historia">
       <div class="container">
-        <h2 id="titulo-historia">Nossa história</h2>
-        <p>O Instituto Caminhos surgiu com o propósito de transformar solidariedade em ações concretas dentro da comunidade. Muita gente quer ajudar, mas não sabe por onde começar. Muitas comunidades precisam de apoio, mas nem sempre encontram quem possa oferecê-lo.</p>
-        <p>Nosso papel é aproximar esses dois lados: pessoas dispostas a ajudar e comunidades que precisam de apoio.</p>
-        <p><small>O Instituto Caminhos é uma organização fictícia, criada para um projeto acadêmico de desenvolvimento front-end.</small></p>
+        ${textoComImagem(`<h2 id="titulo-historia">Nossa história</h2>
+            <p>O Instituto Caminhos surgiu com o propósito de transformar solidariedade em ações concretas dentro da comunidade. Muita gente quer ajudar, mas não sabe por onde começar. Muitas comunidades precisam de apoio, mas nem sempre encontram quem possa oferecê-lo.</p>
+            <p>Nosso papel é aproximar esses dois lados: pessoas dispostas a ajudar e comunidades que precisam de apoio.</p>
+            <p><small>O Instituto Caminhos é uma organização fictícia, criada para um projeto acadêmico de desenvolvimento front-end.</small></p>`, 'comunidade-reunida')}
       </div>
     </section>
 
     <section class="secao secao-destaque" aria-labelledby="titulo-nome">
       <div class="container">
-        <h2 id="titulo-nome">Por que &ldquo;Caminhos&rdquo;?</h2>
-        <p>O nome representa a ideia de que cada pessoa pode contribuir de uma maneira diferente. Quem doa, quem oferece tempo, quem divulga e quem organiza ajuda a construir, cada um a seu modo, um caminho para uma realidade melhor.</p>
+        ${textoComImagem(`<h2 id="titulo-nome">Por que &ldquo;Caminhos&rdquo;?</h2>
+            <p>O nome representa a ideia de que cada pessoa pode contribuir de uma maneira diferente. Quem doa, quem oferece tempo, quem divulga e quem organiza ajuda a construir, cada um a seu modo, um caminho para uma realidade melhor.</p>`, 'caminho-esperanca', { invertida: true })}
       </div>
     </section>
 
@@ -361,9 +388,9 @@
 
     <section class="secao" id="voluntariado" aria-labelledby="titulo-voluntariado">
       <div class="container">
-        <h2 id="titulo-voluntariado">Seja voluntário</h2>
-        <p>Você pode oferecer parte do seu tempo e das suas habilidades em ações na comunidade. Não é preciso experiência prévia: o mais importante é a vontade de participar.</p>
-        <p><a class="btn btn-primario" href="#/cadastro">Fazer meu cadastro</a></p>
+        ${textoComImagem(`<h2 id="titulo-voluntariado">Seja voluntário</h2>
+            <p>Você pode oferecer parte do seu tempo e das suas habilidades em ações na comunidade. Não é preciso experiência prévia: o mais importante é a vontade de participar.</p>
+            <p><a class="btn btn-primario" href="#/cadastro">Fazer meu cadastro</a></p>`, 'voluntariado-equipe')}
       </div>
     </section>
 
@@ -385,8 +412,8 @@
 
     <section class="secao secao-destaque" id="divulgacao" aria-labelledby="titulo-divulgacao">
       <div class="container">
-        <h2 id="titulo-divulgacao">Ajude a divulgar</h2>
-        <p>Compartilhar informação também é uma forma de ajudar. Falar sobre as ações do Instituto com amigos, familiares e colegas ajuda a ampliar o alcance das campanhas e a encontrar novos voluntários.</p>
+        ${textoComImagem(`<h2 id="titulo-divulgacao">Ajude a divulgar</h2>
+            <p>Compartilhar informação também é uma forma de ajudar. Falar sobre as ações do Instituto com amigos, familiares e colegas ajuda a ampliar o alcance das campanhas e a encontrar novos voluntários.</p>`, 'divulgacao', { invertida: true })}
       </div>
     </section>
 
@@ -398,7 +425,8 @@
     ${cabecalhoPagina('Faça parte do Instituto Caminhos', 'Se deseja contribuir com o nosso propósito, preencha os seus dados abaixo e indique como gostaria de participar.')}
 
     <section class="secao" aria-labelledby="titulo-formulario">
-      <div class="container container-estreito">
+      <div class="container layout-cadastro">
+        <div class="cadastro-formulario">
         <h2 id="titulo-formulario">Formulário de cadastro</h2>
         <p>Campos com <span aria-hidden="true">*</span><span class="sr-only">asterisco</span> são obrigatórios.</p>
         ${alerta('info', 'Informação', 'este é um projeto acadêmico e nada é enviado a um servidor. Para demonstração, o navegador guarda um rascunho do formulário e um resumo dos cadastros confirmados. CPF, CEP e telefone nunca são guardados.')}
@@ -415,7 +443,7 @@
             <div class="campo">
               <label for="cpf">CPF *</label>
               <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" inputmode="numeric" pattern="[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}-[0-9]{2}" title="Use o formato 000.000.000-00" aria-describedby="ajuda-cpf" required>
-              <small id="ajuda-cpf">Formato: 000.000.000-00</small>
+              <small id="ajuda-cpf">Formato: 000.000.000-00. O sistema confere os dígitos verificadores; nada é enviado a servidor.</small>
             </div>
 
             <div class="campo">
@@ -435,8 +463,8 @@
 
             <div class="campo">
               <label for="telefone">Telefone *</label>
-              <input type="tel" id="telefone" name="telefone" placeholder="00 00000-0000" inputmode="numeric" pattern="[0-9]{2} [0-9]{5}-[0-9]{4}" title="Use o formato 00 00000-0000" autocomplete="tel" aria-describedby="ajuda-telefone" required>
-              <small id="ajuda-telefone">Formato: DDD e número, como 00 00000-0000</small>
+              <input type="tel" id="telefone" name="telefone" placeholder="00 00000-0000" inputmode="numeric" pattern="[0-9]{2} [0-9]{4,5}-[0-9]{4}" title="Use DDD e número, como 00 00000-0000 ou 00 0000-0000" autocomplete="tel" aria-describedby="ajuda-telefone" required>
+              <small id="ajuda-telefone">Formato: DDD e número, como 00 00000-0000 (celular) ou 00 0000-0000 (fixo)</small>
             </div>
           </fieldset>
 
@@ -464,6 +492,10 @@
 
           <button type="submit">Enviar cadastro</button>
         </form>
+        </div>
+        <figure class="cadastro-figura">
+          ${Caminhos.imagens.html('acolhimento')}
+        </figure>
       </div>
     </section>
 
@@ -527,13 +559,41 @@
      A chave é o nome da rota: "#/sobre" usa a visão "sobre".
      ---------------------------------------------------------- */
   const visoes = {
-    inicio: { titulo: 'Instituto Caminhos | Solidariedade em ação', html: visaoInicio },
-    sobre: { titulo: 'Sobre | Instituto Caminhos', html: visaoSobre },
-    projetos: { titulo: 'Projetos | Instituto Caminhos', html: visaoProjetos },
-    'como-ajudar': { titulo: 'Como ajudar | Instituto Caminhos', html: visaoComoAjudar },
-    cadastro: { titulo: 'Seja voluntário | Instituto Caminhos', html: visaoCadastro },
-    contato: { titulo: 'Contato | Instituto Caminhos', html: visaoContato },
-    naoEncontrada: { titulo: 'Página não encontrada | Instituto Caminhos', html: visaoNaoEncontrada }
+    inicio: {
+      titulo: 'Instituto Caminhos | Solidariedade em ação',
+      descricao: 'Instituto Caminhos: uma ONG fictícia que transforma solidariedade em ações concretas, conectando voluntários, doadores e comunidades.',
+      html: visaoInicio
+    },
+    sobre: {
+      titulo: 'Sobre | Instituto Caminhos',
+      descricao: 'Conheça a história, a missão, a visão e os valores do Instituto Caminhos e entenda por que o nome é "Caminhos".',
+      html: visaoSobre
+    },
+    projetos: {
+      titulo: 'Projetos | Instituto Caminhos',
+      descricao: 'Conheça as ações do Instituto Caminhos: educação, conexão comunitária, oportunidades em rede, campanhas de arrecadação e distribuição de doações.',
+      html: visaoProjetos
+    },
+    'como-ajudar': {
+      titulo: 'Como ajudar | Instituto Caminhos',
+      descricao: 'Veja como participar: seja voluntário, faça uma doação, apoie um projeto ou ajude a divulgar as ações do Instituto Caminhos.',
+      html: visaoComoAjudar
+    },
+    cadastro: {
+      titulo: 'Seja voluntário | Instituto Caminhos',
+      descricao: 'Preencha o cadastro de voluntário do Instituto Caminhos e diga como gostaria de ajudar. Projeto acadêmico: nada é enviado a um servidor.',
+      html: visaoCadastro
+    },
+    contato: {
+      titulo: 'Contato | Instituto Caminhos',
+      descricao: 'Canais de contato (fictícios) e dúvidas frequentes sobre como participar do Instituto Caminhos.',
+      html: visaoContato
+    },
+    naoEncontrada: {
+      titulo: 'Página não encontrada | Instituto Caminhos',
+      descricao: 'A página que você procurou não existe no site do Instituto Caminhos. Volte ao início e continue explorando.',
+      html: visaoNaoEncontrada
+    }
   };
 
   Caminhos.templates = {
