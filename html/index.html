@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Instituto Caminhos: uma ONG fictícia que transforma solidariedade em ações concretas, conectando voluntários, doadores e comunidades.">
+  <title>Instituto Caminhos | Solidariedade em ação</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Os scripts são carregados na ordem abaixo (defer mantém a ordem). -->
+  <script src="js/armazenamento.js" defer></script>
+  <script src="js/ui.js" defer></script>
+  <script src="js/navegacao.js" defer></script>
+  <script src="js/templates.js" defer></script>
+  <script src="js/formulario.js" defer></script>
+  <script src="js/projetos.js" defer></script>
+  <script src="js/router.js" defer></script>
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo principal</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#/">Instituto Caminhos</a>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="menu-principal">Menu</button>
+      <nav aria-label="Navegação principal">
+        <ul class="nav-list" id="menu-principal">
+          <li><a href="#/" data-rota="inicio">Início</a></li>
+          <li><a href="#/sobre" data-rota="sobre">Sobre</a></li>
+          <li><a href="#/projetos" data-rota="projetos">Projetos</a></li>
+          <li class="tem-submenu">
+            <a href="#/como-ajudar" data-rota="como-ajudar">Como ajudar</a>
+            <button type="button" class="submenu-toggle" aria-expanded="false" aria-controls="submenu-ajudar" aria-label="Opções de Como ajudar">
+              <span class="seta" aria-hidden="true"></span>
+            </button>
+            <ul class="submenu" id="submenu-ajudar" hidden>
+              <li><a href="#/como-ajudar/voluntariado">Voluntariado</a></li>
+              <li><a href="#/como-ajudar/doacoes">Doações</a></li>
+              <li><a href="#/como-ajudar/apoio">Apoio a projetos</a></li>
+              <li><a href="#/como-ajudar/divulgacao">Divulgação</a></li>
+            </ul>
+          </li>
+          <li><a href="#/cadastro" data-rota="cadastro">Seja voluntário</a></li>
+          <li><a href="#/contato" data-rota="contato">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- O conteúdo de cada "página" é montado pelo JavaScript dentro de #app -->
+  <main id="conteudo" tabindex="-1">
+    <div id="app">
+      <noscript>
+        <div class="container secao">
+          <h1>Instituto Caminhos</h1>
+          <p>Este site precisa do JavaScript ativado para mostrar o conteúdo. Ative o JavaScript no navegador e recarregue a página.</p>
+        </div>
+      </noscript>
+    </div>
+  </main>
+
+  <!-- Avisa leitores de tela quando a "página" muda -->
+  <p class="sr-only" id="anuncio-rota" role="status" aria-live="polite"></p>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <section aria-labelledby="rodape-instituto">
+        <h2 id="rodape-instituto">Instituto Caminhos</h2>
+        <p>Conectando pessoas a caminhos de participação e transformação social.</p>
+      </section>
+      <nav aria-label="Navegação do rodapé">
+        <h2>Páginas</h2>
+        <ul>
+          <li><a href="#/">Início</a></li>
+          <li><a href="#/sobre">Sobre</a></li>
+          <li><a href="#/projetos">Projetos</a></li>
+          <li><a href="#/como-ajudar">Como ajudar</a></li>
+          <li><a href="#/cadastro">Seja voluntário</a></li>
+          <li><a href="#/contato">Contato</a></li>
+        </ul>
+      </nav>
+      <section aria-labelledby="rodape-contato">
+        <h2 id="rodape-contato">Contato</h2>
+        <p>E-mail: contato@institutocaminhos.org.br</p>
+        <p>Telefone: (11) 99999-0000</p>
+        <p><small>Contatos fictícios, criados para fins acadêmicos.</small></p>
+      </section>
+    </div>
+    <div class="container footer-base">
+      <p><small>&copy; 2026 Instituto Caminhos. Projeto acadêmico de uma ONG fictícia.</small></p>
+    </div>
+  </footer>
+
+  <!-- Área das notificações (toasts) -->
+  <div class="toast-area" id="area-toast" aria-live="polite"></div>
+
+  <!-- Modal de confirmação reutilizável (elemento nativo <dialog>) -->
+  <dialog id="modal" aria-labelledby="modal-titulo" aria-describedby="modal-texto">
+    <h2 id="modal-titulo"></h2>
+    <p id="modal-texto"></p>
+    <div class="modal-botoes">
+      <button type="button" class="btn-contorno" id="modal-cancelar">Cancelar</button>
+      <button type="button" class="btn-primario" id="modal-confirmar">Confirmar</button>
+    </div>
+  </dialog>
+</body>
+</html>
