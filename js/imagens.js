@@ -22,13 +22,13 @@
      Caminhos de imagem montados pelo JavaScript são resolvidos a partir
      da PÁGINA que está aberta (html/index.html), e não a partir deste
      arquivo .js. Como a página fica dentro de html/, é preciso subir
-     uma pasta ("../") para chegar em img/. Se a página mudar de pasta,
+     uma pasta ("../") para chegar em imagens/. Se a página mudar de pasta,
      basta ajustar este valor. */
   const RAIZ = '../';
-  const PASTA = RAIZ + 'img/ilustracoes/';
+  const PASTA = RAIZ + 'imagens/ilustracoes/';
 
   // Monta o caminho de qualquer arquivo a partir da raiz do projeto.
-  // Ex.: url('img/foto.webp') -> '../img/foto.webp'
+  // Ex.: url('imagens/foto.webp') -> '../imagens/foto.webp'
   function url(caminhoNaRaiz) {
     return RAIZ + caminhoNaRaiz;
   }

@@ -1,9 +1,9 @@
 # Prompts para versões fotográficas (opcional)
 
-> **Estado atual do projeto:** nenhuma imagem deste documento foi gerada. O site usa as ilustrações SVG de `img/ilustracoes/` e a foto da fachada original. Estes prompts servem para quem quiser gerar fotos com uma ferramenta de IA.
+> **Estado atual do projeto:** nenhuma imagem deste documento foi gerada. O site usa as ilustrações SVG de `imagens/ilustracoes/` e a foto da fachada original. Estes prompts servem para quem quiser gerar fotos com uma ferramenta de IA.
 >
 > **Regras:** imagens geradas por IA devem ser descritas como *ilustrações*, nunca como fotografias documentais de ações reais. Não inclua o logotipo, nomes de pessoas, endereços, números de impacto ou texto legível. Evite estereótipos e cenas que exponham a vulnerabilidade de pessoas (sem rostos de crianças em situação de carência).
-> Salve em `img/` (na raiz do projeto), converta para WebP e registre em `js/imagens.js`, com `alt` e `width`/`height`. O caminho é montado com `RAIZ = '../'`, porque a página fica em `html/`.
+> Salve em `imagens/` (na raiz do projeto), converta para WebP e registre em `js/imagens.js`, com `alt` e `width`/`height`. O caminho é montado com `RAIZ = '../'`, porque a página fica em `html/`.
 
 Estilo comum a todos: *fotografia editorial leve, luz natural, cores petróleo, verde e âmbar, pessoas adultas diversas e sorrindo, sem texto legível, proporção 3:2.*
 

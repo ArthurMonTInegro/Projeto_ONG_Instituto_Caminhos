@@ -216,8 +216,8 @@
           <!-- WebP leve (60 KB / 150 KB) para navegadores modernos; o PNG original
                fica como alternativa. Sem loading="lazy": é a imagem principal. -->
           <picture>
-            <source type="image/webp" srcset="${Caminhos.imagens.url('img/fachada-instituto-768.webp')} 768w, ${Caminhos.imagens.url('img/fachada-instituto-1536.webp')} 1536w" sizes="(max-width: 63.9375rem) min(100vw, 36rem), 40vw">
-            <img src="${Caminhos.imagens.url('img/fachada-instituto.png')}" width="1536" height="1024" fetchpriority="high" decoding="async" alt="Fachada do prédio do Instituto Caminhos com voluntários sorrindo e segurando caixas de doações">
+            <source type="image/webp" srcset="${Caminhos.imagens.url('imagens/fachada-instituto-768.webp')} 768w, ${Caminhos.imagens.url('imagens/fachada-instituto-1536.webp')} 1536w" sizes="(max-width: 63.9375rem) min(100vw, 36rem), 40vw">
+            <img src="${Caminhos.imagens.url('imagens/fachada-instituto.png')}" width="1536" height="1024" fetchpriority="high" decoding="async" alt="Fachada do prédio do Instituto Caminhos com voluntários sorrindo e segurando caixas de doações">
           </picture>
         </figure>
       </div>

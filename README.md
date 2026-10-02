@@ -61,7 +61,7 @@ Projeto_ONG_Instituto_Caminhos/
 │   ├── projetos.js       (filtro de projetos)
 │   ├── router.js         (navegação SPA)
 │   └── main.js           (inicialização)
-├── img/
+├── imagens/
 │   ├── fachada-instituto.png        (original, usado como alternativa)
 │   ├── fachada-instituto-768.webp   (hero, versão leve)
 │   ├── fachada-instituto-1536.webp  (hero, versão grande)
@@ -80,9 +80,9 @@ Caminhos relativos são resolvidos a partir do **arquivo que os usa**:
 | Onde está a referência | Exemplo | Resolvido a partir de |
 |---|---|---|
 | `html/index.html` (`<link>`, `<script>`, favicon) | `../css/style.css`, `../js/main.js` | a pasta `html/` → sobe uma pasta com `../` |
-| JavaScript que monta `<img>` (`js/imagens.js`, `js/templates.js`) | `../img/ilustracoes/educacao.svg` | a **página aberta** (`html/index.html`), não o arquivo `.js`. Por isso há uma constante `RAIZ = '../'` em `js/imagens.js` |
+| JavaScript que monta `<img>` (`js/imagens.js`, `js/templates.js`) | `../imagens/ilustracoes/educacao.svg` | a **página aberta** (`html/index.html`), não o arquivo `.js`. Por isso há uma constante `RAIZ = '../'` em `js/imagens.js` |
 | `css/style.css` (`url(...)`) | não há nenhum `url()` hoje | se houver, conta a partir de `css/` |
-| `index.html` da raiz | `html/index.html`, `img/ilustracoes/favicon.svg` | a raiz |
+| `index.html` da raiz | `html/index.html`, `imagens/ilustracoes/favicon.svg` | a raiz |
 
 Nenhum caminho começa com `/`: assim o site funciona tanto na raiz de um domínio quanto em um subdiretório como `https://arthurmontinegro.github.io/Projeto_ONG_Instituto_Caminhos/`. Os links entre "páginas" usam rotas com `#` (`#/sobre`), que não dependem de pastas.
 
@@ -234,8 +234,8 @@ O repositório não inclui testes automatizados; a validação é manual e feita
 | Tipo | Arquivos | Como é usado |
 |------|----------|--------------|
 | Foto da fachada (hero da página inicial) | `fachada-instituto.png` (original, 2,3 MB), `-768.webp` (59 KB), `-1536.webp` (150 KB) | `<picture>` com `srcset`: navegadores modernos baixam só o WebP; o PNG é a alternativa. `width`/`height` informados, sem `loading="lazy"` e com `fetchpriority="high"` |
-| Ilustrações SVG | `img/ilustracoes/*.svg` (10 arquivos) | Criadas para este projeto (desenho vetorial, 2 a 5 KB cada). Registradas em `js/imagens.js` com alt, `width`/`height` e `loading="lazy"` |
-| Favicon | `img/ilustracoes/favicon.svg` | Símbolo simples de caminho e sol, **não** é o logotipo oficial |
+| Ilustrações SVG | `imagens/ilustracoes/*.svg` (10 arquivos) | Criadas para este projeto (desenho vetorial, 2 a 5 KB cada). Registradas em `js/imagens.js` com alt, `width`/`height` e `loading="lazy"` |
+| Favicon | `imagens/ilustracoes/favicon.svg` | Símbolo simples de caminho e sol, **não** é o logotipo oficial |
 
 As ilustrações são **conceituais**: não representam ações, pessoas ou locais reais. Cada uma aparece em uma única página; a exceção são as miniaturas de três projetos, que se repetem de propósito nos cartões "Principais ações" da página inicial (mesmo projeto, mesma imagem).
 
@@ -360,8 +360,8 @@ A versão anterior do site, com uma página HTML para cada seção (`sobre.html`
 
 ## Créditos
 
-- **Imagem da fachada** (`img/fachada-instituto.png` e versões `.webp`): material utilizado neste projeto acadêmico, ilustrando a ONG fictícia. Versões WebP geradas a partir do original.
-- **Ilustrações** (`img/ilustracoes/`): desenhos vetoriais criados para este projeto, sem fonte externa.
+- **Imagem da fachada** (`imagens/fachada-instituto.png` e versões `.webp`): material utilizado neste projeto acadêmico, ilustrando a ONG fictícia. Versões WebP geradas a partir do original.
+- **Ilustrações** (`imagens/ilustracoes/`): desenhos vetoriais criados para este projeto, sem fonte externa.
 - **Fontes**: fontes do próprio sistema do usuário (Georgia para títulos e `system-ui` para textos). Nenhuma fonte externa é carregada.
 - **Textos**: escritos para este projeto. Não há dados reais de impacto, voluntários ou beneficiários.
 
