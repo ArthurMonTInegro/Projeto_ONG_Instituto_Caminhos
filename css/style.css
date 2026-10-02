@@ -513,6 +513,16 @@ button:active {
   transform: translateY(1px);
 }
 
+/* Estado desabilitado: mais apagado, cursor de "proibido" e sem o
+   efeito de clique. (Usado no botão "Enviar cadastro" enquanto a
+   confirmação está aberta.) */
+.btn:disabled,
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .btn-primario,
 button[type="submit"] {
   background: var(--ambar);
@@ -523,6 +533,11 @@ button[type="submit"] {
 button[type="submit"]:hover {
   background: var(--ambar-escuro);
   color: var(--texto);
+}
+
+/* Desabilitado não reage ao mouse */
+button[type="submit"]:disabled:hover {
+  background: var(--ambar);
 }
 
 /* Botão secundário: usado sobre fundo escuro (hero) */
@@ -792,6 +807,21 @@ textarea:focus {
 .campo-invalido select,
 .campo-invalido textarea {
   border-color: #a4161a;
+}
+
+/* Campo conferido e correto: borda verde e "✓" depois do rótulo.
+   O símbolo complementa a cor (não depender só da cor) e o texto
+   alternativo vazio ("/ \"\"") evita que leitores de tela o leiam. */
+.campo-valido input,
+.campo-valido select {
+  border-color: var(--verde);
+}
+
+.campo-valido label::after {
+  content: " ✓";
+  content: " ✓" / "";
+  color: var(--verde);
+  font-weight: 700;
 }
 
 /* --- Filtro de projetos --- */

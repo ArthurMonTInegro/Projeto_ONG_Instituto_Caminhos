@@ -212,6 +212,8 @@ O JavaScript não repete o breakpoint do CSS: para saber se está no modo hambú
 - **E-mail**: precisa de domínio com ponto (`nome@dominio.com`).
 - **Telefone**: celular `00 00000-0000` ou fixo `00 0000-0000`; a máscara se ajusta ao digitar.
 - **Envio**: com qualquer erro, o modal não abre; as mensagens aparecem abaixo de cada campo (ligadas por `aria-describedby`, com `aria-invalid="true"`) e o foco vai para o primeiro campo errado.
+- **Sinalização visual**: depois da primeira tentativa de envio, cada campo correto ganha **borda verde e um "✓"** junto ao rótulo, e cada campo errado ganha **borda vermelha e mensagem em texto**. O símbolo e a mensagem complementam a cor, então a informação não depende só dela. Os campos são conferidos de novo enquanto a pessoa digita.
+- **Estados dos botões**: `:hover` (fundo mais escuro), `:focus-visible` (contorno de 3px), `:active` (desce 1px) e `:disabled` (opacidade 0.55 e cursor `not-allowed`). O botão "Enviar cadastro" fica desabilitado enquanto a confirmação está aberta, e o foco volta para ele ao fechar.
 - **Envio duplicado**: enquanto o modal está aberto, o resto da página fica inativo. Um clique duplo em "Enviar" não fecha o modal sem querer, e clicar várias vezes em "Confirmar" gera um único cadastro.
 - **Limitação**: o formulário é **demonstrativo**. Não há servidor: nada é enviado à ONG; o navegador guarda só um resumo (primeiro nome, forma de ajudar e data). A página Contato não tem formulário, apenas canais fictícios e perguntas frequentes.
 
@@ -345,7 +347,7 @@ O site usa apenas caminhos relativos e não precisa de etapa de build. Para publ
 | Menu hambúrguer pouco documentado | Funcionamento descrito passo a passo (classes `js` e `aberto`, `aria-expanded`, teclado, foco); botão com estado visual quando aberto |
 | Dropdown e teclado | Submenu "Como ajudar" no padrão *disclosure*: `Enter`/`Espaço` abrem, `Esc` fecha e devolve o foco, clique fora fecha |
 | Caminhos após a pasta `html/` | Recursos com `../`, entrada na raiz para o GitHub Pages, caminhos de imagem do JavaScript centralizados em `js/imagens.js` |
-| Formulário | CPF com dígitos verificadores, telefone fixo/celular, e-mail com domínio, proteção contra clique duplo no modal |
+| Formulário | CPF com dígitos verificadores, telefone fixo/celular, e-mail com domínio, campo válido em verde com ✓, botão desabilitado durante a confirmação, proteção contra clique duplo |
 | Imagens | Foto do hero em WebP sem recorte; 10 ilustrações próprias com texto alternativo |
 | Grid de 12 colunas | `--colunas: 12` e `repeat(var(--colunas), minmax(0, 1fr))` em todos os layouts de várias colunas; os breakpoints trocam o `span` |
 

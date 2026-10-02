@@ -155,9 +155,30 @@
     }
 
     aviso.textContent = texto;
+    area.classList.remove('campo-valido');
     area.classList.add('campo-invalido');
     campo.setAttribute('aria-invalid', 'true');
     campo.setAttribute('aria-describedby', (campo.dataset.ajuda + ' ' + aviso.id).trim());
+  }
+
+  // Campo conferido e correto: borda verde e um "✓" no rótulo (CSS).
+  // Só aparece depois que a pessoa tenta enviar, para não "aprovar"
+  // campos que ela ainda nem preencheu.
+  function marcarValido(campo) {
+    campo.closest('.campo').classList.add('campo-valido');
+  }
+
+  // Confere um campo e mostra o resultado (erro ou válido)
+  function validarCampo(campo) {
+    const erro = obterErro(campo);
+    if (erro) {
+      mostrarErro(campo, erro);
+    } else {
+      limparErro(campo);
+      marcarValido(campo);
+    }
+    campo.dataset.validado = 'sim';
+    return erro;
   }
 
   function limparErro(campo) {
@@ -275,19 +296,27 @@
       salvarRascunho(formulario);
     });
 
-    // Enquanto a pessoa corrige um campo com erro, revalida na hora
+    // Depois da primeira tentativa de envio, cada campo é conferido de
+    // novo enquanto a pessoa digita: o erro some (e o "✓" aparece) assim
+    // que o valor fica correto.
     campos.forEach(function (campo) {
       campo.addEventListener('input', function () {
-        if (campo.getAttribute('aria-invalid') === 'true') {
-          const erro = obterErro(campo);
-          if (erro) {
-            mostrarErro(campo, erro);
-          } else {
-            limparErro(campo);
-          }
+        if (campo.dataset.validado === 'sim') {
+          validarCampo(campo);
         }
       });
     });
+
+    const botaoEnviar = formulario.querySelector('button[type="submit"]');
+
+    // Volta os campos ao estado inicial (sem verde nem vermelho)
+    function limparMarcas() {
+      campos.forEach(function (campo) {
+        limparErro(campo);
+        campo.closest('.campo').classList.remove('campo-valido');
+        delete campo.dataset.validado;
+      });
+    }
 
     // Etapa final: roda depois que a pessoa confirma no modal
     function concluirCadastro(primeiroNome, formaDeAjudar) {
@@ -299,6 +328,7 @@
 
       Caminhos.armazenamento.limparRascunho();
       formulario.reset();
+      limparMarcas();
 
       let texto = 'Obrigado, ' + primeiroNome + '! Seu cadastro foi preenchido corretamente. ' +
         'Como este é um projeto acadêmico, nada foi enviado a um servidor.';
@@ -320,15 +350,11 @@
       let primeiroCampoComErro = null;
 
       campos.forEach(function (campo) {
-        const erro = obterErro(campo);
-        if (erro) {
-          mostrarErro(campo, erro);
+        if (validarCampo(campo)) {
           totalDeErros++;
           if (!primeiroCampoComErro) {
             primeiroCampoComErro = campo;
           }
-        } else {
-          limparErro(campo);
         }
       });
 
@@ -343,6 +369,10 @@
       const seletor = formulario.elements.ajuda;
       const formaDeAjudar = seletor.options[seletor.selectedIndex].textContent;
 
+      // Enquanto a confirmação está aberta, o botão fica desabilitado:
+      // impede um segundo envio do mesmo cadastro.
+      botaoEnviar.disabled = true;
+
       Caminhos.ui.confirmar({
         titulo: 'Confirmar cadastro',
         texto: 'Você está prestes a confirmar o cadastro de ' + primeiroNome +
@@ -350,6 +380,12 @@
         confirmarTexto: 'Confirmar',
         cancelarTexto: 'Revisar dados'
       }).then(function (confirmou) {
+        // Ao fechar, o navegador tenta devolver o foco ao botão, mas ele
+        // ainda estava desabilitado (e botão desabilitado não recebe foco).
+        // Por isso reabilitamos e devolvemos o foco aqui, para quem usa
+        // teclado continuar do mesmo lugar.
+        botaoEnviar.disabled = false;
+        botaoEnviar.focus({ preventScroll: true });
         if (confirmou) {
           concluirCadastro(primeiroNome, formaDeAjudar);
         }
