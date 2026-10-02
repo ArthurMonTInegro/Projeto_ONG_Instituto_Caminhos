@@ -2,7 +2,6 @@
    INTERFACE (ui)
 
    Componentes de interface usados em várias partes do site:
-   - menu mobile
    - link "Ir para o conteúdo"
    - anúncio para leitores de tela
    - alerta de feedback
@@ -18,57 +17,6 @@
     if (area) {
       area.textContent = texto;
     }
-  }
-
-  /* --- Menu mobile --- */
-  function iniciarMenuMobile() {
-    const botao = document.querySelector('.nav-toggle');
-    const menu = document.getElementById('menu-principal');
-
-    if (!botao || !menu) {
-      return;
-    }
-
-    function abrirMenu() {
-      menu.classList.add('aberto');
-      botao.setAttribute('aria-expanded', 'true');
-      botao.textContent = 'Fechar';
-    }
-
-    function fecharMenu() {
-      menu.classList.remove('aberto');
-      botao.setAttribute('aria-expanded', 'false');
-      botao.textContent = 'Menu';
-    }
-
-    botao.addEventListener('click', function () {
-      if (menu.classList.contains('aberto')) {
-        fecharMenu();
-      } else {
-        abrirMenu();
-      }
-    });
-
-    // Ao escolher uma página, o menu fecha
-    menu.querySelectorAll('a').forEach(function (link) {
-      link.addEventListener('click', fecharMenu);
-    });
-
-    // A tecla Esc fecha o menu e devolve o foco ao botão
-    document.addEventListener('keydown', function (evento) {
-      if (evento.key === 'Escape' && menu.classList.contains('aberto')) {
-        fecharMenu();
-        botao.focus();
-      }
-    });
-
-    // Se a tela ficar grande, volta ao estado inicial
-    const telaGrande = window.matchMedia('(min-width: 40.01rem)');
-    telaGrande.addEventListener('change', function (evento) {
-      if (evento.matches) {
-        fecharMenu();
-      }
-    });
   }
 
   /* --- Link "Ir para o conteúdo principal" ---
@@ -197,7 +145,6 @@
 
   Caminhos.ui = {
     anunciar: anunciar,
-    iniciarMenuMobile: iniciarMenuMobile,
     iniciarSkipLink: iniciarSkipLink,
     mostrarFeedback: mostrarFeedback,
     limparFeedback: limparFeedback,

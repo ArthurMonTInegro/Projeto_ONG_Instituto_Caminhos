@@ -11,10 +11,12 @@
    7. Componentes (botões, cartões, detalhes, contato)
    8. Formulário
    9. Rodapé
-   10. Responsividade (media queries)
-   11. Preferência por menos movimento
-   12. Componentes da Etapa 3 (usados pelo JavaScript)
-   13. Componentes de feedback: badges, alertas, toast e modal
+   10. Preferência por menos movimento
+   11. Componentes do menu mobile, filtro e formulário (JavaScript)
+   12. Componentes de feedback: badges, alertas, toast e modal
+   13. SPA: transição entre páginas, foco e lista de cadastros
+   14. Responsividade: 5 breakpoints (vêm por último, de propósito:
+       assim eles sobrescrevem as regras base de todas as seções)
    ========================================================== */
 
 
@@ -56,8 +58,10 @@
   --raio-pequeno: 0.5rem;
   --sombra: 0 6px 18px rgba(18, 53, 66, 0.14);
 
-  /* Largura máxima do conteúdo e transição padrão */
+  /* Largura máxima do conteúdo, margem lateral e transição padrão.
+     --largura e --gutter mudam nos breakpoints (seção 14). */
   --largura: 68rem;
+  --gutter: 2rem;
   --transicao: 0.2s ease;
 }
 
@@ -197,26 +201,27 @@ small {
    4. LAYOUT
    ========================================================== */
 .container {
-  width: min(100% - 2rem, var(--largura));
+  width: min(100% - var(--gutter), var(--largura));
   margin-inline: auto;
 }
 
 /* Versão mais estreita, usada no formulário */
 .container-estreito {
-  width: min(100% - 2rem, 40rem);
+  width: min(100% - var(--gutter), 40rem);
 }
 
-/* Grade responsiva com CSS Grid: as colunas se ajustam sozinhas
-   conforme o espaço disponível. */
+/* Grades com CSS Grid. O número de colunas é definido por faixa de
+   tela (seção 14): .grade = 3 → 2 → 1 coluna e .grade-4 = 4 → 2 → 1.
+   minmax(0, 1fr) impede que um texto longo estoure a coluna. */
 .grade {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--espaco-3);
   margin-bottom: var(--espaco-3);
 }
 
 .grade-4 {
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 
@@ -274,6 +279,77 @@ small {
   color: var(--petroleo);
   box-shadow: inset 0 -3px 0 var(--ambar);
   border-radius: 0;
+}
+
+/* --- Submenu "Como ajudar" (dropdown) ---
+   O item é um link (abre a página) + um botão (abre o submenu).
+   O JavaScript (navegacao.js) controla o atributo "hidden" da
+   lista e o aria-expanded do botão. */
+.tem-submenu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.submenu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  min-height: 2.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--raio-pequeno);
+  background: transparent;
+  color: var(--texto);
+}
+
+.submenu-toggle:hover {
+  background: var(--fundo-suave);
+  color: var(--petroleo);
+}
+
+/* Setinha desenhada com bordas: aponta para baixo e gira ao abrir */
+.seta {
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-top: -0.25rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--transicao);
+}
+
+.submenu-toggle[aria-expanded="true"] .seta {
+  margin-top: 0.25rem;
+  transform: rotate(-135deg);
+}
+
+.submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 15;
+  min-width: 15rem;
+  margin: 0.25rem 0 0;
+  padding: 0.5rem;
+  list-style: none;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+/* "Ponte" invisível sobre o espaço entre o item e o submenu: sem ela,
+   o mouse sai do item ao atravessar o espaço e o submenu fecharia
+   antes de a pessoa conseguir clicar nele. */
+.submenu::before {
+  content: "";
+  position: absolute;
+  top: -0.5rem;
+  left: 0;
+  right: 0;
+  height: 0.5rem;
 }
 
 
@@ -609,7 +685,7 @@ textarea:focus {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  grid-template-columns: 1.2fr 1fr 1fr; /* 3 colunas; muda nos breakpoints */
   gap: var(--espaco-4);
 }
 
@@ -626,61 +702,7 @@ textarea:focus {
 
 
 /* ==========================================================
-   10. RESPONSIVIDADE (media queries)
-   Abordagem "desktop primeiro": os ajustes abaixo valem para
-   telas menores que o valor indicado.
-   ========================================================== */
-
-/* Tablet e telas menores */
-@media (max-width: 56rem) {
-  .hero-inner {
-    grid-template-columns: 1fr; /* texto em cima, imagem embaixo */
-  }
-
-  .hero {
-    padding-block: var(--espaco-4);
-  }
-}
-
-/* Celular */
-@media (max-width: 40rem) {
-  body {
-    font-size: 1rem;
-  }
-
-  .header-inner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .nav-list a {
-    padding: 0.45rem 0.6rem;
-  }
-
-  .secao {
-    padding-block: var(--espaco-3);
-  }
-
-  .cabecalho-pagina {
-    padding-block: var(--espaco-3);
-  }
-
-  fieldset {
-    padding: var(--espaco-2);
-  }
-
-  .botoes .btn {
-    flex: 1 1 100%; /* botões ocupam a largura toda */
-  }
-
-  .hero-imagem img {
-    max-height: 18rem;
-  }
-}
-
-
-/* ==========================================================
-   11. PREFERÊNCIA POR MENOS MOVIMENTO
+   10. PREFERÊNCIA POR MENOS MOVIMENTO
    Quem configura o sistema para reduzir animações não verá
    as transições nem a rolagem suave.
    ========================================================== */
@@ -698,12 +720,13 @@ textarea:focus {
 
 
 /* ==========================================================
-   12. COMPONENTES DA ETAPA 3 (usados pelo JavaScript)
+   11. COMPONENTES DA ETAPA 3 (usados pelo JavaScript)
    ========================================================== */
 
-/* --- Botão do menu mobile ---
-   Fica escondido por padrão. Só aparece no celular e somente
-   quando o JavaScript está ativo (classe "js" no <html>). */
+/* --- Botão do menu hambúrguer ---
+   Fica escondido por padrão. Só aparece até 60rem (tablet em retrato
+   e celulares), e somente com o JavaScript ativo (classe "js" no
+   <html>). As regras dessa faixa estão na seção 14. */
 .nav-toggle {
   display: none;
   background: var(--fundo);
@@ -714,31 +737,6 @@ textarea:focus {
 
 .nav-toggle:hover {
   background: var(--fundo-suave);
-}
-
-@media (max-width: 40rem) {
-  .js .header-inner {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .js .nav-toggle {
-    display: inline-block;
-  }
-
-  .js .header-inner nav {
-    flex-basis: 100%;
-  }
-
-  /* Menu fechado por padrão; a classe "aberto" é colocada pelo JS */
-  .js .nav-list {
-    display: none;
-    flex-direction: column;
-  }
-
-  .js .nav-list.aberto {
-    display: flex;
-  }
 }
 
 /* --- Mensagens de erro do formulário --- */
@@ -794,7 +792,7 @@ textarea:focus {
 
 
 /* ==========================================================
-   13. COMPONENTES DE FEEDBACK
+   12. COMPONENTES DE FEEDBACK
    Grupo de estilos reutilizável, na paleta do Instituto.
    Como usar (resumo, detalhes no README):
    - Badge:  <span class="badge badge-educacao">Educação</span>
@@ -976,14 +974,286 @@ dialog h2 {
   background: var(--fundo-suave);
 }
 
-@media (max-width: 40rem) {
-  .modal-botoes button {
-    flex: 1 1 100%;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .toast {
     animation: none;
+  }
+}
+
+
+/* ==========================================================
+   13. SPA (navegação de página única)
+   ========================================================== */
+
+/* O foco é movido por JavaScript para o conteúdo novo; ele não
+   precisa de contorno, pois não é um controle clicável. */
+main:focus,
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* Pequena transição ao trocar de "página" */
+.pagina-entrada {
+  animation: pagina-entrada 0.3s ease;
+}
+
+/* Só opacidade (sem deslocar o conteúdo), para a rolagem até uma
+   seção cair exatamente no lugar certo. */
+@keyframes pagina-entrada {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Toast informativo */
+.toast-info {
+  border-left-color: var(--petroleo);
+}
+
+/* Lista de cadastros guardados no navegador */
+.lista-cadastros {
+  list-style: none;
+  margin: 0 0 var(--espaco-2);
+  padding: 0;
+}
+
+.lista-cadastros li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--borda);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pagina-entrada {
+    animation: none;
+  }
+}
+
+
+/* ==========================================================
+   14. RESPONSIVIDADE (breakpoints)
+
+   Abordagem "desktop primeiro": o CSS acima descreve a tela de
+   notebook (1025px a 1439px). Cada bloco abaixo ajusta o layout
+   para telas MENORES que o valor indicado, e o último para telas
+   MAIORES. Os blocos vêm do maior para o menor, então o menor
+   sempre "vence" quando duas regras se aplicam.
+
+   (rem em media query vale sempre 16px, e variáveis CSS não
+   funcionam dentro de media query: por isso os valores se repetem.)
+
+   Breakpoint        Largura          Dispositivos       O que muda
+   ---------------   --------------   ----------------   ----------------------------
+   BP1  30rem        até 480px        celular pequeno    1 coluna, botões largos, marca
+                                                         menor, modal e toast compactos
+   BP2  40rem        até 640px        celular grande     grades em 1 coluna, rodapé em
+                                                         1 coluna, espaçamentos menores
+   BP3  60rem        até 960px        tablet retrato     menu hambúrguer, hero em 1
+                                                         coluna, rodapé em 2 colunas
+   BP4  64rem        até 1024px       tablet paisagem    grades em 2 colunas
+   (padrão)          1025 a 1439px    notebook           grades 3/4 colunas, menu
+                                                         horizontal com dropdown
+   (entre BP3 e BP4: 961 a 1024px mantém o menu horizontal e 2 colunas)
+   BP5  90rem        a partir 1440px  tela grande        conteúdo mais largo, fonte e
+                                                         espaçamentos maiores
+   ========================================================== */
+
+/* BP4: tablet em paisagem e notebooks pequenos (até 1024px)
+   Com menos espaço, os cartões passam para 2 colunas. */
+@media (max-width: 64rem) {
+  .grade,
+  .grade-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-inner {
+    gap: var(--espaco-3);
+  }
+}
+
+/* BP3: tablet em retrato (até 960px)
+   O menu horizontal precisa de cerca de 890px de conteúdo (≈ 925px
+   de tela, medido no navegador). Abaixo de 960px ele não cabe em uma
+   linha, então vira hambúrguer. */
+@media (max-width: 60rem) {
+  .hero {
+    padding-block: var(--espaco-4);
+  }
+
+  .hero-inner {
+    grid-template-columns: 1fr; /* texto em cima, imagem embaixo */
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer-grid > :first-child {
+    grid-column: 1 / -1; /* o texto institucional ocupa a linha toda */
+  }
+
+  /* Menu hambúrguer: a marca fica à esquerda, o botão à direita e a
+     lista de links abaixo, em coluna. Só vale com JavaScript ativo. */
+  .js .nav-toggle {
+    display: inline-block;
+  }
+
+  .js .header-inner nav {
+    flex-basis: 100%;
+  }
+
+  .js .nav-list {
+    display: none; /* fechado por padrão; a classe "aberto" vem do JS */
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .js .nav-list.aberto {
+    display: flex;
+  }
+
+  .js .nav-list a {
+    padding: 0.65rem 0.75rem;
+  }
+
+  /* Submenu vira uma sanfona: abre dentro da lista, recuado */
+  .js .tem-submenu {
+    flex-wrap: wrap;
+  }
+
+  .js .tem-submenu > a {
+    flex: 1;
+  }
+
+  .js .submenu-toggle {
+    width: 2.75rem;
+    min-height: 2.75rem;
+  }
+
+  .js .submenu {
+    position: static;
+    flex-basis: 100%;
+    min-width: 0;
+    margin: 0 0 var(--espaco-1) var(--espaco-2);
+    padding: 0 0 0 var(--espaco-1);
+    border: 0;
+    border-left: 2px solid var(--borda);
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+/* BP2: celular grande (até 640px)
+   Os cartões ocupam a linha toda e os espaçamentos diminuem. */
+@media (max-width: 40rem) {
+  body {
+    font-size: 1rem;
+  }
+
+  .grade,
+  .grade-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .secao {
+    padding-block: var(--espaco-3);
+  }
+
+  .cabecalho-pagina {
+    padding-block: var(--espaco-3);
+  }
+
+  fieldset {
+    padding: var(--espaco-2);
+  }
+
+  .botoes .btn {
+    flex: 1 1 100%; /* botões ocupam a largura toda */
+  }
+
+  .hero-imagem img {
+    max-height: 18rem;
+  }
+}
+
+/* BP1: celular pequeno (até 480px)
+   Ajustes finos para a marca e o botão caberem na mesma linha
+   (320px) e para o formulário ficar confortável ao toque. */
+@media (max-width: 30rem) {
+  :root {
+    --gutter: 1.5rem; /* margens laterais menores */
+  }
+
+  .brand {
+    font-size: 1.25rem;
+  }
+
+  .nav-toggle {
+    padding: 0.45rem 0.85rem;
+  }
+
+  .cartao {
+    padding: var(--espaco-2);
+  }
+
+  legend {
+    font-size: 1.1rem;
+  }
+
+  .filtro-btn {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.9rem;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+  }
+
+  /* Modal: botões um embaixo do outro */
+  .modal-botoes button {
+    flex: 1 1 100%;
+  }
+
+  /* Toast: ocupa a largura toda, no rodapé */
+  .toast-area {
+    left: var(--espaco-2);
+    right: var(--espaco-2);
+    width: auto;
+  }
+}
+
+/* BP5: telas grandes (a partir de 1440px)
+   O conteúdo cresce junto: container mais largo e tudo em rem
+   fica 12,5% maior (18px em vez de 16px). */
+@media (min-width: 90rem) {
+  html {
+    font-size: 112.5%;
+  }
+
+  :root {
+    --largura: 72rem;
+    --gutter: 3rem;
+    --espaco-4: 3rem;
+    --espaco-5: 5rem;
+  }
+}
+
+/* Dispositivos de toque (não depende da largura da tela):
+   alvos de toque com pelo menos 44px de altura. */
+@media (hover: none) and (pointer: coarse) {
+  .nav-list a,
+  .submenu-toggle {
+    min-height: 2.75rem;
+  }
+
+  .nav-list a {
+    display: flex;
+    align-items: center;
   }
 }
