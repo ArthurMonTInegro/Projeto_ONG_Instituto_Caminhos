@@ -3,6 +3,7 @@
 
    Este é o último arquivo carregado. Ele só "liga" os módulos:
 
+   vendor/purify.min.js -> biblioteca externa DOMPurify (segurança)
    armazenamento.js  -> localStorage
    ui.js             -> alertas, toast, modal e skip-link
    imagens.js        -> registro das ilustrações (arquivo, alt, tamanho)

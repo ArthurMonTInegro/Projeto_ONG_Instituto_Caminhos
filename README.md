@@ -60,7 +60,10 @@ Projeto_ONG_Instituto_Caminhos/
 │   ├── formulario.js     (máscaras, validação, cadastro)
 │   ├── projetos.js       (filtro de projetos)
 │   ├── router.js         (navegação SPA)
-│   └── main.js           (inicialização)
+│   ├── main.js           (inicialização)
+│   └── vendor/
+│       ├── purify.min.js          (biblioteca externa DOMPurify 3.2.6)
+│       └── DOMPurify-LICENSE.txt  (licença da biblioteca)
 ├── imagens/
 │   ├── fachada-instituto.png        (original, usado como alternativa)
 │   ├── fachada-instituto-768.webp   (hero, versão leve)
@@ -250,6 +253,16 @@ As ilustrações são **conceituais**: não representam ações, pessoas ou loca
 | `divulgacao.svg` | Como ajudar | Ajude a divulgar |
 | `acolhimento.svg` | Seja voluntário | Ao lado do formulário | O texto essencial nunca fica dentro de imagens. A foto da fachada é a imagem original do projeto e foi mantida. Para versões fotográficas no futuro, veja `docs/prompts-imagens.md`.
 
+## Biblioteca externa: DOMPurify
+
+O projeto é feito em JavaScript puro, com uma única biblioteca externa: o **[DOMPurify](https://github.com/cure53/DOMPurify) 3.2.6** (Cure53, licença Apache 2.0 / MPL 2.0, 22 KB).
+
+- **Para que serve:** as páginas da SPA são montadas como texto HTML (`templates.js`) e colocadas na tela com `innerHTML`. Antes disso, o DOMPurify remove qualquer código perigoso (`<script>`, atributos como `onerror`, links `javascript:`). É uma segunda camada contra XSS, além da função `esc()`, que já escapa os textos digitados.
+- **Como foi integrada:** o arquivo oficial `dist/purify.min.js` foi copiado para `js/vendor/`, junto com a licença. Ele **não vem de CDN**, porque a política de segurança do site (`Content-Security-Policy`) só permite scripts do próprio domínio, e uma cópia local também funciona sem internet. O `html/index.html` carrega o arquivo antes dos módulos do site, com `defer`.
+- **Onde é usada:** uma única função, `Caminhos.ui.inserirHTML(elemento, html)` em `js/ui.js`, chama `DOMPurify.sanitize(html, { ADD_ATTR: ['fetchpriority'] })`. O roteador e o painel de cadastros usam essa função em vez de `innerHTML`.
+- **Sem conflitos:** a biblioteca cria só o objeto global `DOMPurify`, e o código do site usa só o objeto `Caminhos`. Se o arquivo não carregar, a função insere o HTML normalmente e o site continua funcionando, protegido pelo `esc()`.
+- **Verificação:** o HTML de todas as páginas foi comparado antes e depois da limpeza. O único atributo removido era o `fetchpriority` da foto principal, por isso ele foi liberado na configuração. Um HTML malicioso injetado de propósito em teste teve o `onerror`, o `javascript:` e o `<script>` removidos.
+
 ## SEO e segurança
 
 - `<title>` e `<meta name="description">` mudam a cada rota (o JavaScript troca os textos definidos em `templates.js`); há tags Open Graph para prévia de links.
@@ -284,7 +297,8 @@ Grupo de componentes reutilizáveis, estilizados na paleta do Instituto (seção
 
 - **HTML5**: elementos semânticos, formulário com `fieldset`, `legend`, `label`, `pattern` e `required`, e o elemento `<dialog>`
 - **CSS3**: variáveis CSS, Flexbox, Grid, transições, `@keyframes`, estados `hover` e `focus-visible`, 5 breakpoints com media queries (`max-width` e `min-width`), `hover`/`pointer` para toque e `prefers-reduced-motion`
-- **JavaScript puro** (sem bibliotecas ou frameworks): DOM, eventos, template literals, `hashchange`, `localStorage` e Promises
+- **JavaScript puro** (sem frameworks): DOM, eventos, template literals, `hashchange`, `localStorage` e Promises
+- **DOMPurify** (biblioteca externa, cópia local): sanitização do HTML antes do `innerHTML`
 - **Git e GitHub**: controle de versão e hospedagem do código
 - **GitHub Pages**: publicação do site
 
@@ -363,6 +377,7 @@ A versão anterior do site, com uma página HTML para cada seção (`sobre.html`
 - **Imagem da fachada** (`imagens/fachada-instituto.png` e versões `.webp`): material utilizado neste projeto acadêmico, ilustrando a ONG fictícia. Versões WebP geradas a partir do original.
 - **Ilustrações** (`imagens/ilustracoes/`): desenhos vetoriais criados para este projeto, sem fonte externa.
 - **Fontes**: fontes do próprio sistema do usuário (Georgia para títulos e `system-ui` para textos). Nenhuma fonte externa é carregada.
+- **DOMPurify 3.2.6** (`js/vendor/purify.min.js`): © Cure53 e colaboradores, licença Apache 2.0 / Mozilla Public License 2.0 (texto em `js/vendor/DOMPurify-LICENSE.txt`). https://github.com/cure53/DOMPurify
 - **Textos**: escritos para este projeto. Não há dados reais de impacto, voluntários ou beneficiários.
 
 ## Autor

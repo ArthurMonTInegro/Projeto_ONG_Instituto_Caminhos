@@ -260,7 +260,7 @@
 
     // Lista de cadastros salvos (e o botão de limpar)
     function atualizarPainel() {
-      painel.innerHTML = Caminhos.templates.painelCadastros(Caminhos.armazenamento.listarCadastros());
+      Caminhos.ui.inserirHTML(painel, Caminhos.templates.painelCadastros(Caminhos.armazenamento.listarCadastros()));
 
       const botaoLimpar = painel.querySelector('#limpar-cadastros');
       if (botaoLimpar) {

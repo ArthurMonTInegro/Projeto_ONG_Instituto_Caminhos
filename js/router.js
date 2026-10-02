@@ -74,7 +74,7 @@
     const visao = visoes[chave];
 
     // 1. Monta a página com o template
-    app.innerHTML = visao.html();
+    Caminhos.ui.inserirHTML(app, visao.html()); // limpa com DOMPurify e injeta
     app.classList.remove('pagina-entrada');
     void app.offsetWidth; // reinicia a animação de entrada
     app.classList.add('pagina-entrada');

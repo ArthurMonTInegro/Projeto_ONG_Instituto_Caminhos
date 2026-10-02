@@ -7,6 +7,7 @@
    - alerta de feedback
    - toast (notificação)
    - modal de confirmação
+   - inserção de HTML sanitizado (DOMPurify)
    ========================================================== */
 (function (Caminhos) {
   'use strict';
@@ -35,6 +36,25 @@
       evento.preventDefault();
       principal.focus();
     });
+  }
+
+  /* --- Inserir HTML com segurança (biblioteca externa DOMPurify) ---
+     O site monta as páginas como texto HTML (templates.js) e as coloca
+     na tela com innerHTML. Antes disso, o DOMPurify (js/vendor/) remove
+     qualquer código perigoso, como <script>, onerror="..." ou links
+     "javascript:". É uma segunda proteção contra XSS, além da função
+     esc() que já escapa os textos digitados pelo usuário.
+     fetchpriority é liberado porque o DOMPurify ainda não o conhece
+     (é a dica de prioridade da foto principal). Se a biblioteca não
+     carregar, o site continua funcionando só com a proteção do esc(). */
+  const CONFIG_DOMPURIFY = { ADD_ATTR: ['fetchpriority'] };
+
+  function inserirHTML(elemento, html) {
+    if (window.DOMPurify && window.DOMPurify.isSupported) {
+      elemento.innerHTML = window.DOMPurify.sanitize(html, CONFIG_DOMPURIFY);
+    } else {
+      elemento.innerHTML = html;
+    }
   }
 
   /* --- Alerta de feedback ---
@@ -149,6 +169,7 @@
 
   Caminhos.ui = {
     anunciar: anunciar,
+    inserirHTML: inserirHTML,
     iniciarSkipLink: iniciarSkipLink,
     mostrarFeedback: mostrarFeedback,
     limparFeedback: limparFeedback,
