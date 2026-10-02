@@ -90,6 +90,33 @@ Nenhum caminho começa com `/`: assim o site funciona tanto na raiz de um domín
 
 O CSS segue a abordagem **desktop primeiro**: as regras base descrevem a tela de notebook, e blocos `@media` ajustam o layout para telas menores (`max-width`) e para telas grandes (`min-width`). Todos os breakpoints ficam juntos, **no final** do `css/style.css` (seção 14), de propósito: assim eles sobrescrevem as regras base de todos os componentes. Os valores estão em `rem` (1rem = 16px em media queries).
 
+### Sistema de 12 colunas (CSS Grid)
+
+Todos os layouts com mais de uma coluna usam a mesma base: a largura é dividida em **12 colunas iguais**.
+
+```css
+:root { --colunas: 12; }
+
+.grade, .hero-inner, .com-imagem, .layout-cadastro, .footer-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--colunas), minmax(0, 1fr));
+}
+.grade > *   { grid-column: span 4; }  /* 12 / 4 = 3 cartões por linha */
+.grade-4 > * { grid-column: span 3; }  /* 12 / 3 = 4 cartões por linha */
+```
+
+Cada bloco informa quantas colunas ocupa com `grid-column: span N`. Como 12 é divisível por 1, 2, 3, 4 e 6, a mesma grade monta 1, 2, 3 ou 4 itens por linha e divisões assimétricas como **7 + 5** (texto + imagem). Os breakpoints não criam grades novas: só trocam o `span`.
+
+| Componente | ≥ 1280px | 1024 a 1279px | 768 a 1023px | até 767px |
+|---|---|---|---|---|
+| `.grade` (cartões) | span 4 (3 por linha) | span 4 | span 6 (2 por linha) | `auto-fit` (1 ou 2) |
+| `.grade-4` (formas de participar) | span 3 (4 por linha) | span 6 (2 x 2) | span 6 | `auto-fit` (1 ou 2) |
+| Hero e texto + imagem | span 7 + span 5 | 7 + 5 | 1 coluna | 1 coluna |
+| Cadastro (formulário + imagem) | span 7 + span 5 | 7 + 5 | 1 coluna | 1 coluna |
+| Rodapé | 3 x span 4 | 3 x span 4 | 12 + (6 + 6) | 1 coluna |
+
+Nos celulares (até 767px), as grades de cartões trocam as 12 colunas por `repeat(auto-fit, minmax(min(100%, 16rem), 1fr))`. Com tão pouco espaço, os 11 espaçamentos internos de uma grade de 12 tomariam largura demais, e o `auto-fit` decide sozinho entre 1 e 2 cartões.
+
 ### Os 5 breakpoints
 
 As faixas seguem a referência indicada na avaliação (celular pequeno, celular grande, tablet, notebook e desktop). Os limites usam `.9375` (por exemplo, `47.9375rem` = 767px e `48rem` = 768px) para que cada largura caia em **uma faixa só**.
@@ -320,6 +347,7 @@ O site usa apenas caminhos relativos e não precisa de etapa de build. Para publ
 | Caminhos após a pasta `html/` | Recursos com `../`, entrada na raiz para o GitHub Pages, caminhos de imagem do JavaScript centralizados em `js/imagens.js` |
 | Formulário | CPF com dígitos verificadores, telefone fixo/celular, e-mail com domínio, proteção contra clique duplo no modal |
 | Imagens | Foto do hero em WebP sem recorte; 10 ilustrações próprias com texto alternativo |
+| Grid de 12 colunas | `--colunas: 12` e `repeat(var(--colunas), minmax(0, 1fr))` em todos os layouts de várias colunas; os breakpoints trocam o `span` |
 
 ## Versionamento
 

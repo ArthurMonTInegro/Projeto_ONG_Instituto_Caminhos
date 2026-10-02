@@ -63,6 +63,7 @@
      --largura e --gutter mudam nos breakpoints (seção 14). */
   --largura: 68rem;
   --gutter: 2rem;
+  --colunas: 12; /* sistema de grid: a largura é dividida em 12 partes */
   --transicao: 0.2s ease;
 }
 
@@ -211,18 +212,40 @@ small {
   width: min(100% - var(--gutter), 40rem);
 }
 
-/* Grades com CSS Grid. O número de colunas é definido por faixa de
-   tela (seção 14): .grade = 3 → 2 → 1 coluna e .grade-4 = 4 → 2 → 1.
-   minmax(0, 1fr) impede que um texto longo estoure a coluna. */
-.grade {
+/* --- SISTEMA DE 12 COLUNAS (CSS Grid) ---
+   Todos os layouts com mais de uma coluna dividem a largura em 12
+   partes iguais (--colunas). Cada bloco diz quantas partes ocupa com
+   "grid-column: span N". Como 12 é divisível por 1, 2, 3, 4 e 6, a
+   mesma grade monta 1, 2, 3 ou 4 cartões por linha e divisões como
+   7 + 5 (texto + imagem). Os breakpoints (seção 14) só trocam o span.
+   minmax(0, 1fr) impede que um texto longo estoure a coluna.
+
+   Componente                 Desktop        Notebook   Tablet    Celular
+   .grade (cartões)           span 4 (3x)    span 4     span 6    auto-fit
+   .grade-4 (participar)      span 3 (4x)    span 6     span 6    auto-fit
+   hero / texto + imagem      span 7 + 5     7 + 5      1 coluna  1 coluna
+   cadastro (form + imagem)   span 7 + 5     7 + 5      1 coluna  1 coluna
+   rodapé                     span 4 (3x)    span 4     12 + 6+6  1 coluna */
+.grade,
+.hero-inner,
+.com-imagem,
+.layout-cadastro,
+.footer-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--colunas), minmax(0, 1fr));
+}
+
+.grade {
   gap: var(--espaco-3);
   margin-bottom: var(--espaco-3);
 }
 
-.grade-4 {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+.grade > * {
+  grid-column: span 4; /* 12 / 4 = 3 cartões por linha */
+}
+
+.grade-4 > * {
+  grid-column: span 3; /* 12 / 3 = 4 cartões por linha */
 }
 
 
@@ -366,10 +389,12 @@ small {
 }
 
 .hero-inner {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
   gap: var(--espaco-4);
   align-items: center;
+}
+
+.hero-inner > div {
+  grid-column: span 7; /* texto: 7 das 12 colunas */
 }
 
 .hero h1 {
@@ -391,6 +416,7 @@ small {
 }
 
 .hero-imagem {
+  grid-column: span 5; /* foto: 5 das 12 colunas */
   margin: 0;
 }
 
@@ -690,9 +716,11 @@ textarea:focus {
 }
 
 .footer-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr; /* 3 colunas; muda nos breakpoints */
   gap: var(--espaco-4);
+}
+
+.footer-grid > * {
+  grid-column: span 4; /* 3 blocos de 4 colunas; muda nos breakpoints */
 }
 
 .footer-base {
@@ -1064,10 +1092,16 @@ main:focus,
 }
 
 .com-imagem {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
   gap: var(--espaco-4);
   align-items: center;
+}
+
+.com-imagem-texto {
+  grid-column: span 7;
+}
+
+.com-imagem-figura {
+  grid-column: span 5;
 }
 
 .com-imagem-invertida .com-imagem-texto {
@@ -1093,10 +1127,16 @@ main:focus,
 }
 
 .layout-cadastro {
-  display: grid;
-  grid-template-columns: minmax(0, 40rem) minmax(0, 1fr);
   gap: var(--espaco-4);
   align-items: start;
+}
+
+.cadastro-formulario {
+  grid-column: span 7;
+}
+
+.cadastro-figura {
+  grid-column: span 5;
 }
 
 .cadastro-figura {
@@ -1140,8 +1180,8 @@ main:focus,
    Com 4 cartões lado a lado, cada um ficaria com cerca de 250px e
    linhas de texto muito curtas. Eles passam a 2 x 2. */
 @media (max-width: 79.9375rem) {
-  .grade-4 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .grade-4 > * {
+    grid-column: span 6; /* 12 / 6 = 2 por linha */
   }
 
   .hero-inner,
@@ -1155,16 +1195,30 @@ main:focus,
    folga seria pequena demais (com zoom ou fontes mais largas ele
    quebraria em duas linhas), então o menu vira hambúrguer. */
 @media (max-width: 63.9375rem) {
-  .grade {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .grade > * {
+    grid-column: span 6; /* 12 / 6 = 2 cartões por linha */
   }
 
   .hero {
     padding-block: var(--espaco-4);
   }
 
-  .hero-inner {
-    grid-template-columns: 1fr; /* texto em cima, imagem embaixo */
+  /* Hero, texto + imagem e cadastro: 1 coluna só (texto em cima,
+     imagem embaixo). Com uma coluna, os 11 espaços (gap) da grade de
+     12 não fazem sentido, então a grade vira uma trilha única. */
+  .hero-inner,
+  .com-imagem,
+  .layout-cadastro {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero-inner > div,
+  .hero-imagem,
+  .com-imagem-texto,
+  .com-imagem-figura,
+  .cadastro-formulario,
+  .cadastro-figura {
+    grid-column: auto;
   }
 
   /* A foto mantém a proporção original (3:2), sem recorte, e não
@@ -1177,21 +1231,15 @@ main:focus,
     max-height: none;
   }
 
-  .footer-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .footer-grid > * {
+    grid-column: span 6; /* Páginas e Contato lado a lado */
   }
 
   .footer-grid > :first-child {
-    grid-column: 1 / -1; /* o texto institucional ocupa a linha toda */
+    grid-column: 1 / -1; /* o texto institucional ocupa as 12 colunas */
   }
 
-  /* Texto + ilustração e formulário + ilustração: viram uma coluna só,
-     com a imagem embaixo do texto e em tamanho moderado. */
-  .com-imagem,
-  .layout-cadastro {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
+  /* Na coluna única, a imagem fica embaixo do texto, em tamanho moderado. */
   .com-imagem-invertida .com-imagem-texto {
     order: 0;
   }
@@ -1272,8 +1320,18 @@ main:focus,
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   }
 
+  .grade > *,
+  .grade-4 > * {
+    grid-column: auto; /* cada cartão ocupa 1 trilha automática */
+  }
+
   .footer-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .footer-grid > *,
+  .footer-grid > :first-child {
+    grid-column: auto;
   }
 
   .secao {
