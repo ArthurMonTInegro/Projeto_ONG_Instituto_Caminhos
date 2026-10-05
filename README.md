@@ -370,6 +370,15 @@ O site usa apenas caminhos relativos e não precisa de etapa de build. Para publ
 O código é versionado com Git e hospedado em um repositório público no GitHub:
 https://github.com/ArthurMonTInegro/Projeto_ONG_Instituto_Caminhos
 
+### Estratégia de branches (GitFlow)
+
+- `main`: só versões estáveis. É dela que o GitHub Pages publica o site. Cada lançamento recebe uma tag (`v1.0.0`, `v1.1.0`...).
+- `develop`: desenvolvimento contínuo. Nenhum commit é feito direto na `main`.
+- `feature/nome`: cada funcionalidade nova nasce da `develop` e volta para ela por pull request.
+- `hotfix/nome`: correção urgente de erro em produção. Nasce da `main` e volta para a `main` e para a `develop`.
+
+Fluxo: `feature/*` → `develop` → `main` (com tag).
+
 A versão anterior do site, com uma página HTML para cada seção (`sobre.html`, `projetos.html`, `como-ajudar.html`, `cadastro.html`, `contato.html` e `js/script.js`), continua no histórico do Git (por exemplo, no commit `5c946fd`). A versão atual é a SPA em `html/index.html`, que já tem todas essas páginas como rotas; por isso esses arquivos antigos foram removidos. Para recuperar um deles: `git checkout 5c946fd -- sobre.html`.
 
 ## Créditos
