@@ -16,8 +16,10 @@
    12. Componentes de feedback: badges, alertas, toast e modal
    13. SPA: transição entre páginas, foco e lista de cadastros
    13b. Imagens e seções com ilustração
-   14. Responsividade: 5 breakpoints (vêm por último, de propósito:
-       assim eles sobrescrevem as regras base de todas as seções)
+   14. Responsividade: 5 breakpoints (vêm depois das seções, de
+       propósito: assim eles sobrescrevem as regras base)
+   15. Modo de alto contraste (botão "Alto contraste")
+   16. Modo de alto contraste do sistema (forced-colors)
    ========================================================== */
 
 
@@ -255,6 +257,49 @@ small {
 .site-header {
   background: var(--fundo);
   border-bottom: 1px solid var(--borda);
+}
+
+/* Barra de acessibilidade: faixa fina no topo com o botão
+   "Alto contraste" (alinhado à direita com Flexbox) */
+.barra-acessibilidade {
+  background: var(--fundo-suave);
+  border-bottom: 1px solid var(--borda);
+}
+
+.barra-acessibilidade .container {
+  display: flex;
+  justify-content: flex-end;
+  padding-block: 0.3rem;
+}
+
+.contraste-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.8rem;
+  border-color: var(--petroleo);
+  background: var(--fundo);
+  color: var(--petroleo);
+  font-size: 0.9rem;
+}
+
+.contraste-toggle:hover {
+  background: var(--fundo-suave);
+}
+
+/* Ligado: fundo petróleo e texto branco (aria-pressed="true") */
+.contraste-toggle[aria-pressed="true"] {
+  background: var(--petroleo);
+  color: #ffffff;
+}
+
+/* Ícone: um círculo metade cheio, metade vazio (decorativo) */
+.contraste-icone {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  background: linear-gradient(90deg, currentColor 50%, transparent 50%);
 }
 
 .header-inner {
@@ -1456,5 +1501,157 @@ main:focus,
   .nav-list a {
     display: flex;
     align-items: center;
+  }
+}
+
+
+/* ==========================================================
+   15. MODO DE ALTO CONTRASTE
+   Liga com o botão "Alto contraste" (js/contraste.js coloca a
+   classe .alto-contraste no <html>) ou sozinho, quando o sistema
+   pede mais contraste (prefers-contrast: more) e a pessoa ainda
+   não escolheu.
+
+   Paleta (contraste medido com a fórmula da WCAG 2.1):
+   - texto branco #ffffff sobre preto #000000 ......... 21:1
+   - links e botões amarelo #ffff00 sobre preto ...... 19.56:1
+   - botão "ligado": preto sobre amarelo ............. 19.56:1
+   - erro #ff9e9e sobre preto ........................ 10.64:1
+   - campo correto #8cff8c sobre preto ............... 16.8:1
+
+   Fica no fim do arquivo e usa !important, de propósito: precisa
+   vencer todas as cores definidas nas seções anteriores.
+   ========================================================== */
+html.alto-contraste,
+html.alto-contraste *,
+html.alto-contraste *::before,
+html.alto-contraste *::after {
+  background-color: #000000 !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Links: amarelo e sublinhados (não dependem só da cor) */
+html.alto-contraste a {
+  color: #ffff00 !important;
+  text-decoration: underline;
+}
+
+/* Botões e links com cara de botão: texto e borda amarelos */
+html.alto-contraste button,
+html.alto-contraste .btn {
+  color: #ffff00 !important;
+  border-color: #ffff00 !important;
+  text-decoration: none;
+}
+
+/* Botão principal e botões "ligados": fundo amarelo e texto preto */
+html.alto-contraste .btn-primario,
+html.alto-contraste button[type="submit"],
+html.alto-contraste [aria-pressed="true"],
+html.alto-contraste .nav-toggle[aria-expanded="true"] {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  border-color: #ffff00 !important;
+}
+
+/* Texto de exemplo dentro dos campos (placeholder) */
+html.alto-contraste ::placeholder {
+  color: #d0d0d0 !important;
+  opacity: 1;
+}
+
+/* O ícone do botão de contraste acompanha a cor do texto */
+html.alto-contraste .contraste-icone {
+  border-color: currentColor !important;
+}
+
+/* Foco do teclado: contorno amarelo em tudo */
+html.alto-contraste :focus-visible,
+html.alto-contraste input:focus,
+html.alto-contraste select:focus,
+html.alto-contraste textarea:focus {
+  outline: 3px solid #ffff00 !important;
+  outline-offset: 3px;
+}
+
+/* Página atual no menu: a linha embaixo passa a ser amarela */
+html.alto-contraste .nav-list a[aria-current="page"] {
+  box-shadow: inset 0 -4px 0 #ffff00 !important;
+  font-weight: 700;
+}
+
+/* Formulário: erro em rosa-claro e campo correto em verde-claro
+   (as mensagens e o "✓" continuam, então não dependem só da cor) */
+html.alto-contraste .campo .erro {
+  color: #ff9e9e !important;
+}
+
+html.alto-contraste .campo-invalido input,
+html.alto-contraste .campo-invalido select,
+html.alto-contraste .campo-invalido textarea,
+html.alto-contraste .alerta-erro,
+html.alto-contraste .toast-erro {
+  border-color: #ff9e9e !important;
+}
+
+html.alto-contraste .campo-valido input,
+html.alto-contraste .campo-valido select {
+  border-color: #8cff8c !important;
+}
+
+html.alto-contraste .campo-valido label::after {
+  color: #8cff8c !important;
+}
+
+/* Sem as cores de fundo, uma linha branca separa as faixas da página */
+html.alto-contraste .hero,
+html.alto-contraste .cabecalho-pagina,
+html.alto-contraste .secao-destaque,
+html.alto-contraste .chamada-final,
+html.alto-contraste .site-footer {
+  border-top: 1px solid #ffffff;
+}
+
+/* Modal: borda branca e fundo da página bem escuro atrás dele */
+html.alto-contraste dialog {
+  border: 2px solid #ffffff;
+}
+
+html.alto-contraste dialog::backdrop {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+
+/* ==========================================================
+   16. MODO DE ALTO CONTRASTE DO SISTEMA (forced-colors)
+   No Windows, o "Contraste alto" do sistema troca TODAS as cores
+   do site pelas cores escolhidas pela pessoa, e apaga fundos e
+   sombras. O que só era mostrado com fundo ou sombra sumiria;
+   por isso estes itens ganham outra forma de aparecer.
+   ========================================================== */
+@media (forced-colors: active) {
+  /* Foco: usa a cor de destaque do próprio sistema */
+  :focus-visible {
+    outline-color: Highlight;
+  }
+
+  /* Página atual: a linha âmbar era uma sombra e sumiria */
+  .nav-list a[aria-current="page"] {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+  }
+
+  /* Botões "ligados" (filtro e alto contraste): o estado era só a
+     cor de fundo, então usamos as cores de seleção do sistema */
+  .filtro-btn[aria-pressed="true"],
+  .contraste-toggle[aria-pressed="true"] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+    border-color: HighlightText;
   }
 }
