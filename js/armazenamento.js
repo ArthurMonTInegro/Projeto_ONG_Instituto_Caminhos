@@ -9,6 +9,7 @@
    - cadastros: primeiro nome, forma de ajudar e data
    - rascunho: nome, e-mail, forma de ajudar e mensagem
    - filtro: o último filtro escolhido em Projetos
+   - contraste: se a pessoa ligou ou desligou o alto contraste
 
    CPF, CEP e telefone NUNCA são guardados.
    ========================================================== */
@@ -122,6 +123,18 @@
     return salvar('filtro-projetos', categoria);
   }
 
+  // --- Modo de alto contraste ---
+  // Guarda "alto" ou "normal". Qualquer outro valor é ignorado
+  // (devolve null = a pessoa ainda não escolheu).
+  function lerContraste() {
+    const valor = ler('contraste', null);
+    return valor === 'alto' || valor === 'normal' ? valor : null;
+  }
+
+  function salvarContraste(valor) {
+    return salvar('contraste', valor === 'alto' ? 'alto' : 'normal');
+  }
+
   Caminhos.armazenamento = {
     listarCadastros: listarCadastros,
     adicionarCadastro: adicionarCadastro,
@@ -130,6 +143,8 @@
     salvarRascunho: salvarRascunho,
     limparRascunho: limparRascunho,
     lerFiltro: lerFiltro,
-    salvarFiltro: salvarFiltro
+    salvarFiltro: salvarFiltro,
+    lerContraste: lerContraste,
+    salvarContraste: salvarContraste
   };
 })(window.Caminhos = window.Caminhos || {});

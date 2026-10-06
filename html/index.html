@@ -23,13 +23,18 @@
   <link rel="icon" type="image/svg+xml" href="../imagens/ilustracoes/favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
 
+  <!-- Estes dois rodam já (sem defer): o modo de alto contraste precisa
+       ser aplicado antes de a página aparecer, senão ela "pisca" com
+       as cores normais. -->
+  <script src="../js/armazenamento.js"></script>
+  <script src="../js/contraste.js"></script>
+
   <!-- Esta página fica em html/. Por isso CSS, JS e imagens usam "../"
        (sobe uma pasta até a raiz do projeto). Os scripts são carregados
        na ordem abaixo (defer mantém a ordem). -->
   <!-- Biblioteca externa (cópia local, licença Apache 2.0 / MPL 2.0):
        DOMPurify 3.2.6, limpa o HTML das páginas antes de ir para a tela -->
   <script src="../js/vendor/purify.min.js" defer></script>
-  <script src="../js/armazenamento.js" defer></script>
   <script src="../js/ui.js" defer></script>
   <script src="../js/imagens.js" defer></script>
   <script src="../js/navegacao.js" defer></script>
@@ -43,6 +48,17 @@
   <a class="skip-link" href="#conteudo">Ir para o conteúdo principal</a>
 
   <header class="site-header">
+    <!-- Barra de acessibilidade: começa escondida e aparece pelo
+         JavaScript (js/contraste.js), que é quem faz o botão funcionar -->
+    <div class="barra-acessibilidade" hidden>
+      <div class="container">
+        <button type="button" class="contraste-toggle" aria-pressed="false">
+          <span class="contraste-icone" aria-hidden="true"></span>
+          Alto contraste
+        </button>
+      </div>
+    </div>
+
     <div class="container header-inner">
       <a class="brand" href="#/">Instituto Caminhos</a>
       <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="menu-principal">Menu</button>
