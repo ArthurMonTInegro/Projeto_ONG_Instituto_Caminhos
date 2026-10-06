@@ -53,6 +53,7 @@ Projeto_ONG_Instituto_Caminhos/
 │   └── style.css
 ├── js/
 │   ├── armazenamento.js  (localStorage)
+│   ├── contraste.js      (modo de alto contraste)
 │   ├── ui.js             (alerta, toast, modal, skip-link)
 │   ├── imagens.js        (registro das ilustrações: arquivo, alt, tamanho)
 │   ├── navegacao.js      (menu hambúrguer e submenu acessível)
@@ -74,7 +75,7 @@ Projeto_ONG_Instituto_Caminhos/
 └── README.md
 ```
 
-Cada arquivo JavaScript cuida de **uma área de funcionalidade**. Eles se comunicam por um único objeto global, `Caminhos` (por exemplo, `Caminhos.ui.mostrarToast(...)`), e são carregados em ordem pelo `html/index.html` (`armazenamento`, `ui`, `imagens`, `navegacao`, `templates`, `formulario`, `projetos`, `router`, `main`). Foram escritos sem `import`/`export`, para o site também funcionar abrindo o `index.html` direto no navegador.
+Cada arquivo JavaScript cuida de **uma área de funcionalidade**. Eles se comunicam por um único objeto global, `Caminhos` (por exemplo, `Caminhos.ui.mostrarToast(...)`), e são carregados em ordem pelo `html/index.html`: primeiro `armazenamento` e `contraste`, no `<head>` e sem `defer` (o alto contraste precisa entrar antes de a página aparecer); depois, com `defer`, `ui`, `imagens`, `navegacao`, `templates`, `formulario`, `projetos`, `router`, `main`). Foram escritos sem `import`/`export`, para o site também funcionar abrindo o `index.html` direto no navegador.
 
 ### Caminhos relativos (pasta `html/`)
 
@@ -228,7 +229,8 @@ O JavaScript não repete o breakpoint do CSS: para saber se está no modo hambú
 4. **Toque:** em um celular ou no emulador do navegador, toque no botão do submenu e em um item.
 5. **Recursos preservados:** "Ir para o conteúdo principal" (primeiro `Tab`), formulário com modal de confirmação, alerta de sucesso e toast, filtro de projetos e animações reduzidas (ative "reduzir movimento" no sistema operacional).
 
-6. **Caminhos:** abra o F12 > aba Network, recarregue e confira que nenhum arquivo aparece em vermelho (404). Teste também abrindo `index.html#/projetos` na raiz: deve cair em `html/index.html#/projetos`.
+6. **Alto contraste:** clique em "Alto contraste" no topo (ou chegue nele com o segundo `Tab` e aperte `Enter`). O fundo fica preto, o texto branco e os links e botões amarelos. Recarregue a página: o modo continua ligado. Clique de novo para desligar.
+7. **Caminhos:** abra o F12 > aba Network, recarregue e confira que nenhum arquivo aparece em vermelho (404). Teste também abrindo `index.html#/projetos` na raiz: deve cair em `html/index.html#/projetos`.
 
 O repositório não inclui testes automatizados; a validação é manual e feita com as ferramentas do navegador.
 
@@ -279,6 +281,7 @@ Todo acesso ao `localStorage` está em `js/armazenamento.js`. O que é guardado,
 | `caminhos:rascunho` | nome, e-mail, forma de ajudar e mensagem | enquanto a pessoa preenche o formulário; apagado ao confirmar |
 | `caminhos:cadastros` | primeiro nome, forma de ajudar e data | quando o cadastro é confirmado |
 | `caminhos:filtro-projetos` | último filtro escolhido | ao clicar em um filtro |
+| `caminhos:contraste` | `"alto"` ou `"normal"` | ao clicar no botão "Alto contraste" |
 
 **CPF, CEP e telefone nunca são guardados.** Ao ler, só itens no formato esperado são aceitos (máx. 50 cadastros). Nada é enviado a servidores. A página "Seja voluntário" tem um botão para apagar os cadastros salvos. Se o navegador bloquear o `localStorage`, o site continua funcionando normalmente.
 
@@ -296,7 +299,7 @@ Grupo de componentes reutilizáveis, estilizados na paleta do Instituto (seção
 ## Tecnologias utilizadas
 
 - **HTML5**: elementos semânticos, formulário com `fieldset`, `legend`, `label`, `pattern` e `required`, e o elemento `<dialog>`
-- **CSS3**: variáveis CSS, Flexbox, Grid, transições, `@keyframes`, estados `hover` e `focus-visible`, 5 breakpoints com media queries (`max-width` e `min-width`), `hover`/`pointer` para toque e `prefers-reduced-motion`
+- **CSS3**: variáveis CSS, Flexbox, Grid, transições, `@keyframes`, estados `hover` e `focus-visible`, 5 breakpoints com media queries (`max-width` e `min-width`), `hover`/`pointer` para toque, `prefers-reduced-motion`, `prefers-contrast` e `forced-colors`
 - **JavaScript puro** (sem frameworks): DOM, eventos, template literals, `hashchange`, `localStorage` e Promises
 - **DOMPurify** (biblioteca externa, cópia local): sanitização do HTML antes do `innerHTML`
 - **Git e GitHub**: controle de versão e hospedagem do código
@@ -314,9 +317,44 @@ Grupo de componentes reutilizáveis, estilizados na paleta do Instituto (seção
 - Menu e submenu operáveis só pelo teclado (veja a seção Navegação acessível)
 - Alvos de toque de pelo menos 44px em dispositivos de toque
 - Foco de teclado visível e animações reduzidas para quem prefere
+- Modo de alto contraste, com botão no topo da página (veja a seção abaixo)
 - Textos vindos do `localStorage` são escapados antes de aparecerem na tela
 
 Limitação conhecida de toda SPA: sem JavaScript, o conteúdo não aparece. O site mostra uma mensagem pedindo para ativar o JavaScript.
+
+## Modo de alto contraste
+
+O botão **"Alto contraste"**, na faixa do topo de todas as páginas, troca as cores do site por uma versão para pessoas com baixa visão ou que precisam de mais contraste para ler. Ele resolve a issue #2 (milestone v1.1.0).
+
+**Como funciona**
+
+1. O botão é um `<button>` com `aria-pressed`: o leitor de tela diz se ele está ligado ou desligado. O texto do botão não muda; o que muda é o estado.
+2. Ao clicar, `js/contraste.js` coloca ou tira a classe `alto-contraste` no `<html>`. As cores do modo ficam na seção 15 do `css/style.css`.
+3. A escolha é guardada no `localStorage` (`caminhos:contraste`) e continua valendo ao voltar ao site.
+4. Se a pessoa ainda não escolheu nada e o sistema operacional pede mais contraste (`prefers-contrast: more`), o modo liga sozinho. Se ela escolher pelo botão, a escolha dela vence.
+5. O `contraste.js` é carregado no `<head>` **sem** `defer`, para a classe entrar antes de a página aparecer. Assim ela não "pisca" com as cores normais.
+6. Sem JavaScript, a faixa com o botão fica escondida, porque o botão não funcionaria.
+
+**Cores e contraste** (fórmula de contraste da WCAG 2.1; mínimo AA de 4.5:1 para texto normal e 3:1 para texto grande e bordas)
+
+| Elemento | Texto | Fundo | Contraste |
+|----------|-------|-------|-----------|
+| Textos e títulos | `#ffffff` | `#000000` | 21:1 |
+| Links e botões (texto e borda) | `#ffff00` | `#000000` | 19.56:1 |
+| Botão principal e botões ligados | `#000000` | `#ffff00` | 19.56:1 |
+| Mensagens de erro e borda do campo errado | `#ff9e9e` | `#000000` | 10.64:1 |
+| Borda e "✓" do campo correto | `#8cff8c` | `#000000` | 16.8:1 |
+| Contorno de foco do teclado | `#ffff00`, 3px | `#000000` | 19.56:1 |
+
+Links ficam sublinhados e o item atual do menu ganha uma linha amarela embaixo, para nada depender só da cor.
+
+**Contraste alto do Windows (`forced-colors`)**
+
+Quando o Windows está no modo "Contraste alto", o próprio sistema troca todas as cores do site e apaga fundos e sombras. A seção 16 do CSS cuida do que sumiria: o contorno de foco usa a cor de destaque do sistema (`Highlight`), a página atual no menu fica sublinhada (antes era uma sombra) e os botões ligados, como o filtro de projetos, usam as cores de seleção do sistema.
+
+**Verificação**
+
+O contraste de todos os textos foi medido automaticamente no navegador (Chromium, com Playwright), aplicando a fórmula da WCAG 2.1 às cores calculadas de cada elemento: 7 páginas, em 1280px e 390px, com o menu aberto e com as mensagens de erro do formulário. Resultado: 694 trechos de texto em cada modo, **todos acima do mínimo AA**. O menor contraste foi 6.26:1 no modo normal e 10.64:1 no alto contraste.
 
 ## Como executar localmente
 
